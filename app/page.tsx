@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, FileText, Sparkles, Link, Briefcase, RefreshCw, AlertCircle } from "lucide-react";
+import { Upload, FileText, Sparkles, Link, Briefcase, RefreshCw, AlertCircle, Brain } from "lucide-react";
 
 type Platform = "linkedin" | "gupy";
 type ViewState = "input" | "linkedin_result" | "gupy_result";
@@ -147,19 +147,15 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 w-4/5 mx-auto px-4 py-8 flex flex-col items-center">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 flex flex-col">
 
         <form onSubmit={handleOptimize} className="w-full space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
 
-            {/* Bloco do Currículo */}
-            <Card className="border-sky-500/10 bg-slate-900/40 backdrop-blur-md shadow-xl text-slate-200">
+            <Card className="border-sky-500/10 bg-slate-900/40 backdrop-blur-md shadow-xl text-slate-200 flex flex-col h-full">
               <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle className="text-sky-300">Seu Currículo</CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Insira o texto atual ou carregue um arquivo.
-                  </CardDescription>
+                  <CardTitle className="text-lg text-sky-300">Dados do Currículo</CardTitle>
                 </div>
                 <div>
                   <input
@@ -172,90 +168,89 @@ export default function Home() {
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     onClick={() => fileInputRef.current?.click()}
                     className="border-sky-500/20 bg-slate-900/60 hover:bg-sky-950/40 text-sky-400 hover:text-sky-300 transition-all flex items-center gap-1.5"
                   >
                     <Upload className="h-3.5 w-3.5" />
-                    Upload .txt
+                    Fazer Upload (txt)
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-4">
+              <CardContent className="pt-2 flex-1 flex flex-col">
                 <Textarea
                   placeholder="Cole aqui o texto do seu currículo atual..."
                   value={resumeText}
                   onChange={(e) => setResumeText(e.target.value)}
-                  className="min-h-[220px] bg-slate-950/60 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-sky-500 focus:ring-sky-500/10 resize-none"
+                  className="h-[350px] max-h-[350px] flex-1 bg-slate-950/60 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-sky-500 focus:ring-sky-500/10 resize-none overflow-y-auto custom-scrollbar"
                 />
               </CardContent>
             </Card>
 
-            <Card className="border-sky-500/10 bg-slate-900/40 backdrop-blur-md shadow-xl text-slate-200">
-              <CardHeader className="border-b border-sky-950/30 pb-4">
-                <CardTitle className="text-sky-300">A Vaga Desejada</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Cole os detalhes, requisitos e descrição da vaga.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <Textarea
-                  placeholder="Cole aqui a descrição completa da vaga de emprego (requisitos, competências, atividades)..."
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  className="min-h-[220px] bg-slate-950/60 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-sky-500 focus:ring-sky-500/10 resize-none"
-                />
-              </CardContent>
-            </Card>
-          </div>
+            <div className="flex flex-col gap-6 h-full justify-between">
+              <Card className="border-sky-500/10 bg-slate-900/40 backdrop-blur-md shadow-xl text-slate-200">
+                <CardHeader className="border-b border-sky-950/30 pb-4">
+                  <CardTitle className="text-lg text-sky-300">Dados da Vaga</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-3">
+                  <Textarea
+                    placeholder="Cole aqui a descrição completa da vaga de emprego (requisitos, competências, atividades)..."
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    className="h-[240px] bg-slate-950/60 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-sky-500 focus:ring-sky-500/10 resize-none overflow-y-auto custom-scrollbar"
+                  />
+                </CardContent>
+              </Card>
 
-          <div className="space-y-3">
-            <Label className="font-semibold text-slate-300">Escolha a plataforma alvo:</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <Label className="font-semibold text-slate-300">Plataforma alvo:</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div
+                    onClick={() => setPlatform("linkedin")}
+                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${platform === "linkedin"
+                      ? "border-sky-500 bg-sky-950/20 shadow-[0_0_15px_rgba(14,165,233,0.15)]"
+                      : "border-slate-800 bg-slate-900/20 hover:border-slate-700"
+                      }`}
+                  >
+                    <div className={`p-1.5 rounded-lg ${platform === "linkedin" ? "bg-sky-500/20 text-sky-400" : "bg-slate-800 text-slate-400"}`}>
+                      <Briefcase className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold text-sm ${platform === "linkedin" ? "text-sky-300" : "text-slate-200"}`}>
+                        LinkedIn (PDF Otimizado)
+                      </h3>
+                    </div>
+                  </div>
 
-              <div
-                onClick={() => setPlatform("linkedin")}
-                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${platform === "linkedin"
-                  ? "border-sky-500 bg-sky-950/20 shadow-[0_0_15px_rgba(14,165,233,0.15)]"
-                  : "border-slate-800 bg-slate-900/20 hover:border-slate-700"
-                  }`}
-              >
-                <div className={`p-2 rounded-lg ${platform === "linkedin" ? "bg-sky-500/20 text-sky-400" : "bg-slate-800 text-slate-400"}`}>
-                  <Link className="h-6 w-6" />
-                </div>
-                <div className="flex-1">
-                  <h3 className={`font-semibold ${platform === "linkedin" ? "text-sky-300" : "text-slate-200"}`}>
-                    LinkedIn (PDF Otimizado)
-                  </h3>
-                </div>
-              </div>
-
-              <div
-                onClick={() => setPlatform("gupy")}
-                className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${platform === "gupy"
-                  ? "border-sky-500 bg-sky-950/20 shadow-[0_0_15px_rgba(14,165,233,0.15)]"
-                  : "border-slate-800 bg-slate-900/20 hover:border-slate-700"
-                  }`}
-              >
-                <div className={`p-2 rounded-lg ${platform === "gupy" ? "bg-sky-500/20 text-sky-400" : "bg-slate-800 text-slate-400"}`}>
-                  <Briefcase className="h-6 w-6" />
-                </div>
-                <div className="flex-1">
-                  <h3 className={`font-semibold ${platform === "gupy" ? "text-sky-300" : "text-slate-200"}`}>
-                    Gupy (Copiar e Colar)
-                  </h3>
+                  <div
+                    onClick={() => setPlatform("gupy")}
+                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${platform === "gupy"
+                      ? "border-sky-500 bg-sky-950/20 shadow-[0_0_15px_rgba(14,165,233,0.15)]"
+                      : "border-slate-800 bg-slate-900/20 hover:border-slate-700"
+                      }`}
+                  >
+                    <div className={`p-1.5 rounded-lg ${platform === "gupy" ? "bg-sky-500/20 text-sky-400" : "bg-slate-800 text-slate-400"}`}>
+                      <Brain className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`font-semibold text-sm ${platform === "gupy" ? "text-sky-300" : "text-slate-200"}`}>
+                        Gupy (Copiar e Colar)
+                      </h3>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <Button
-            type="submit"
-            className="w-full py-6 text-base font-semibold bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white border border-sky-400/20 shadow-lg shadow-sky-500/10 transition-all flex items-center justify-center gap-2 rounded-xl group"
-          >
-            <Sparkles className="h-5 w-5 text-sky-200 group-hover:scale-110 transition-transform" />
-            Analisar e Otimizar Currículo
-          </Button>
+          <div className="border-t border-sky-950/40 pt-6 flex justify-end">
+            <Button
+              type="submit"
+              className="w-full md:w-auto md:px-8 py-6 text-base font-semibold bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-400 hover:to-blue-500 text-white border border-sky-400/20 shadow-lg shadow-sky-500/10 transition-all flex items-center justify-center gap-2 rounded-xl group"
+            >
+              <Sparkles className="h-5 w-5 text-sky-200 group-hover:scale-110 transition-transform" />
+              Analisar e Otimizar Currículo
+            </Button>
+          </div>
 
         </form>
       </main>

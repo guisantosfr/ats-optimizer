@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { 
-  Copy, Check, ArrowLeft, Briefcase, User, Wrench, 
+import {
+  Copy, Check, ArrowLeft, Briefcase, User, Wrench,
   Award, Sparkles, AlertTriangle, PlusCircle, CheckCircle, Download, FileCode
 } from "lucide-react";
 
@@ -27,7 +27,7 @@ export const GupyResult: React.FC<GupyResultProps> = ({ data, onBack }) => {
       await navigator.clipboard.writeText(text);
       setCopiedStates((prev) => ({ ...prev, [id]: true }));
       toast.success("Copiado para a área de transferência!");
-      
+
       setTimeout(() => {
         setCopiedStates((prev) => ({ ...prev, [id]: false }));
       }, 2000);
@@ -66,19 +66,21 @@ export const GupyResult: React.FC<GupyResultProps> = ({ data, onBack }) => {
     });
   };
 
+  const setCourseType = (type: string): string => {
+    if (type == "course") return "CURSO";
+    if (type == "certificate") return "CERTIFICADO";
+    if (type == "volunteer_work") return "TRABALHO VOLUNTÁRIO";
+    if (type == "recognition") return "RECONHECIMENTO";
+    return "OUTRO";
+  }
+
   const handleExportMarkdown = () => {
     const mdContent = `
-# Otimização de Currículo para Gupy
-
-## Informações do Arquivo
-- **Arquivo Sugerido**: ${state.filename}
-- **Score Geral**: ${state.scores.geral}%
-- **Score Experiências**: ${state.scores.experiencias}%
-- **Score Habilidades**: ${state.scores.habilidades}%
-- **Score Cursos**: ${state.scores.cursosCertificados}%
-
 ## Sobre Você / Carta de Apresentação
 ${state.coverLetter}
+
+## Top 3 Competências Principais
+${state.top3Strengths.map(s => `- ${s}`).join("\n")}
 
 ## Experiências Profissionais
 ${state.experiences.map((exp) => `
@@ -90,10 +92,7 @@ ${exp.bullets.map(b => `- ${b}`).join("\n")}
 ${state.skills.join(", ")}
 
 ## Cursos e Certificações
-${state.courses.map(c => `- **[${c.type.toUpperCase()}]** ${c.title}: ${c.description}`).join("\n")}
-
-## Top 3 Competências Principais
-${state.top3Strengths.map(s => `- ${s}`).join("\n")}
+${state.courses.map(c => `- **[${setCourseType(c.type)}]** ${c.title}: ${c.description}`).join("\n")}
 
 ## Recomendações de Aprimoramento
 
@@ -122,10 +121,9 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto px-4 py-8 animate-fade-in">
-      {/* Header */}
+    <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto px-4 py-8 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-sky-950/40 pb-5">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-5">
           <Button
             variant="outline"
             size="icon"
@@ -146,63 +144,51 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
         </div>
         <Button
           onClick={handleExportMarkdown}
-          className="bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-semibold shadow-lg shadow-sky-950/50 border border-sky-400/20 px-5 py-2.5 transition-all flex items-center gap-2 rounded-xl self-start md:self-auto"
+          size="lg"
+          className="bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-base text-white font-semibold shadow-lg shadow-sky-950/50 border border-sky-400/20 px-5 py-2.5 transition-all flex items-center gap-2 rounded-xl self-start md:self-auto"
         >
           <FileCode className="h-4.5 w-4.5" />
           Exportar Markdown (.md)
         </Button>
       </div>
 
-      {/* Dashboard de Scores */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Score Geral */}
         <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(state.scores.geral)}`}>
-          <CardContent className="pt-6 text-center space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Score Geral</span>
-            <div className="text-4xl font-extrabold">{state.scores.geral}%</div>
-            <p className="text-[10px] opacity-60">Aderência total</p>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Score Geral</span>
+            <div className="text-4xl font-extrabold mt-2">{state.scores.geral}%</div>
           </CardContent>
         </Card>
 
-        {/* Score Experiências */}
         <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(state.scores.experiencias)}`}>
-          <CardContent className="pt-6 text-center space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Experiências</span>
-            <div className="text-4xl font-extrabold">{state.scores.experiencias}%</div>
-            <p className="text-[10px] opacity-60">Aderência profissional</p>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Experiências</span>
+            <div className="text-4xl font-extrabold mt-2">{state.scores.experiencias}%</div>
           </CardContent>
         </Card>
 
-        {/* Score Habilidades */}
         <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(state.scores.habilidades)}`}>
-          <CardContent className="pt-6 text-center space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Habilidades</span>
-            <div className="text-4xl font-extrabold">{state.scores.habilidades}%</div>
-            <p className="text-[10px] opacity-60">Termos técnicos</p>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Habilidades</span>
+            <div className="text-4xl font-extrabold mt-2">{state.scores.habilidades}%</div>
           </CardContent>
         </Card>
 
-        {/* Score Cursos */}
         <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(state.scores.cursosCertificados)}`}>
-          <CardContent className="pt-6 text-center space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wider opacity-80">Cursos/Certificados</span>
-            <div className="text-4xl font-extrabold">{state.scores.cursosCertificados}%</div>
-            <p className="text-[10px] opacity-60">Escolaridade & Cursos</p>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Cursos/Certificados</span>
+            <div className="text-4xl font-extrabold mt-2">{state.scores.cursosCertificados}%</div>
           </CardContent>
         </Card>
       </div>
 
       <div className="flex flex-col gap-6">
-        {/* Seção Sobre Mim / Carta de Apresentação */}
         <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
           <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
               <User className="h-5 w-5 text-sky-400" />
               <div>
                 <CardTitle className="text-xl font-bold text-sky-300">Sobre Você / Carta de Apresentação</CardTitle>
-                <CardDescription className="text-slate-400 text-xs">
-                  Edite e cole no campo "Sobre você" ou "Resumo Profissional" da Gupy.
-                </CardDescription>
               </div>
             </div>
             <Button
@@ -224,7 +210,7 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
               )}
             </Button>
           </CardHeader>
-          <CardContent className="pt-5 space-y-3">
+          <CardContent className="pt-2 space-y-3">
             <Textarea
               value={state.coverLetter}
               onChange={handleCoverLetterChange}
@@ -234,30 +220,44 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
           </CardContent>
         </Card>
 
-        {/* Seção Experiências Profissionais */}
+        {state.top3Strengths && state.top3Strengths.length > 0 && (
+          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
+            <CardHeader className="border-b border-sky-950/30 pb-4">
+              <CardTitle className="text-xl font-bold text-sky-300">Habilidades Técnicas Principais (Top 3)</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {state.top3Strengths.map((strength, index) => (
+                  <div key={index} className="p-4 rounded-xl border border-sky-500/20 bg-sky-500/5 text-center flex flex-col items-center justify-center space-y-2">
+                    <CheckCircle className="h-6 w-6 text-sky-400" />
+                    <span className="text-base font-bold text-slate-100">{strength}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
           <CardHeader className="border-b border-sky-950/30 pb-4">
             <div className="flex items-center gap-2">
               <Briefcase className="h-5 w-5 text-sky-400" />
               <div>
                 <CardTitle className="text-xl font-bold text-sky-300">Experiências Profissionais</CardTitle>
-                <CardDescription className="text-slate-400 text-xs">
-                  Edite os cargos/responsabilidades e copie a descrição detalhada estruturada em bullets.
-                </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="pt-5 space-y-6">
+          <CardContent className="pt-2 space-y-6">
             {state.experiences.map((exp, index) => {
               const expId = `exp_${index}`;
               const formattedBulletsText = exp.bullets.map(b => `• ${b}`).join("\n");
-              
+
               return (
                 <div key={index} className="p-5 rounded-xl bg-slate-950/40 border border-slate-900 space-y-4">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
                       <div>
-                        <Label className="text-xs text-slate-400 font-semibold uppercase">Cargo</Label>
+                        <Label className="text-sm text-slate-400 font-semibold uppercase">Cargo</Label>
                         <Input
                           value={exp.role}
                           onChange={(e) => handleExperienceFieldChange(index, "role", e.target.value)}
@@ -265,7 +265,7 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-400 font-semibold uppercase">Empresa</Label>
+                        <Label className="text-sm text-slate-400 font-semibold uppercase">Empresa</Label>
                         <Input
                           value={exp.company}
                           onChange={(e) => handleExperienceFieldChange(index, "company", e.target.value)}
@@ -273,7 +273,7 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-400 font-semibold uppercase">Período</Label>
+                        <Label className="text-sm text-slate-400 font-semibold uppercase">Período</Label>
                         <Input
                           value={exp.period}
                           onChange={(e) => handleExperienceFieldChange(index, "period", e.target.value)}
@@ -283,30 +283,29 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                     </div>
                     <Button
                       variant="ghost"
-                      size="sm"
                       onClick={() => handleCopy(expId, formattedBulletsText)}
                       className="border border-slate-800 text-slate-300 hover:bg-slate-900 hover:text-white flex items-center gap-1.5 transition-all self-end md:self-auto h-10"
                     >
                       {copiedStates[expId] ? (
                         <>
                           <Check className="h-4 w-4 text-emerald-400" />
-                          <span className="text-emerald-400 text-xs">Copiado</span>
+                          <span className="text-emerald-400">Copiado</span>
                         </>
                       ) : (
                         <>
                           <Copy className="h-4 w-4" />
-                          <span className="text-xs">Copiar Atividades</span>
+                          <span>Copiar Atividades</span>
                         </>
                       )}
                     </Button>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs text-slate-400 font-semibold">Atividades Otimizadas (Uma por linha)</Label>
+                    <Label className="text-slate-400 font-semibold mb-3">Atividades Otimizadas</Label>
                     <Textarea
-                      value={exp.bullets.join("\n")}
+                      value={exp.bullets.map(b => `- ${b}`).join("\n")}
                       onChange={(e) => handleExperienceBulletsChange(index, e.target.value)}
                       className="min-h-[120px] bg-slate-950/60 border-slate-800 text-slate-200 placeholder-slate-500 focus:border-sky-500 focus:ring-sky-500/10 text-base resize-y font-mono"
-                      placeholder="Cada linha representa uma atividade..."
+                      placeholder="Digite as atividades"
                     />
                   </div>
                 </div>
@@ -315,21 +314,16 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
           </CardContent>
         </Card>
 
-        {/* Seção Competências */}
         <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
           <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
               <Wrench className="h-5 w-5 text-sky-400" />
               <div>
                 <CardTitle className="text-xl font-bold text-sky-300">Competências</CardTitle>
-                <CardDescription className="text-slate-400 text-xs">
-                  Adicione como tags no campo de Competências da Gupy.
-                </CardDescription>
               </div>
             </div>
             <Button
               variant="outline"
-              size="sm"
               onClick={() => handleCopy("skills", state.skills.join(", "))}
               className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5 transition-all"
             >
@@ -346,12 +340,12 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
               )}
             </Button>
           </CardHeader>
-          <CardContent className="pt-5">
+          <CardContent className="pt-2">
             <div className="flex flex-wrap gap-2">
               {state.skills.map((skill, index) => (
                 <span
                   key={index}
-                  className="bg-sky-500/10 border border-sky-500/20 text-sky-400 text-sm px-3.5 py-1.5 rounded-full font-medium"
+                  className="bg-sky-500/10 border border-sky-500/20 text-sky-400 px-3 py-1.5 rounded-full font-medium"
                 >
                   {skill.trim()}
                 </span>
@@ -360,7 +354,6 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
           </CardContent>
         </Card>
 
-        {/* Seção Cursos & Certificações */}
         {state.courses && state.courses.length > 0 && (
           <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
             <CardHeader className="border-b border-sky-950/30 pb-4">
@@ -368,9 +361,6 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                 <Award className="h-5 w-5 text-sky-400" />
                 <div>
                   <CardTitle className="text-xl font-bold text-sky-300">Cursos, Certificações e Idiomas</CardTitle>
-                  <CardDescription className="text-slate-400 text-xs">
-                    Edite e copie individualmente para preenchimento dos campos na Gupy.
-                  </CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -381,11 +371,11 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                   <div key={index} className="p-4 rounded-xl bg-slate-950/30 border border-slate-900 space-y-3">
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-2 flex-grow">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800/30">
+                        <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800/30">
                           {course.type === "course" ? "Curso" : course.type === "certification" ? "Certificação" : course.type === "volunteer_work" ? "Voluntariado" : "Reconhecimento"}
                         </span>
                         <div className="flex-1">
-                          <Label className="text-xs text-slate-500 font-semibold uppercase">Título</Label>
+                          <Label className="text-xs text-slate-500 font-semibold">Título</Label>
                           <Input
                             value={course.title}
                             onChange={(e) => handleCourseFieldChange(index, "title", e.target.value)}
@@ -396,7 +386,7 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => handleCopy(courseId, `${course.title}: ${course.description}`)}
+                        onClick={() => handleCopy(courseId, course.description)}
                         className="text-slate-400 hover:text-white border border-slate-800 hover:bg-slate-900 flex-shrink-0 h-8 w-8"
                       >
                         {copiedStates[courseId] ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
@@ -418,28 +408,7 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
           </Card>
         )}
 
-        {/* Top 3 Strengths */}
-        {state.top3Strengths && state.top3Strengths.length > 0 && (
-          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4">
-              <CardTitle className="text-xl font-bold text-sky-300">Habilidades Técnicas Principais (Top 3)</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {state.top3Strengths.map((strength, index) => (
-                  <div key={index} className="p-4 rounded-xl border border-sky-500/20 bg-sky-500/5 text-center flex flex-col items-center justify-center space-y-2">
-                    <CheckCircle className="h-6 w-6 text-sky-400" />
-                    <span className="text-base font-bold text-slate-100">{strength}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Recomendações de Aprimoramento */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Adicionar */}
           <Card className="border-emerald-500/10 bg-emerald-950/5 text-slate-200">
             <CardHeader className="border-b border-emerald-950/20 pb-4">
               <div className="flex items-center gap-2">
@@ -451,17 +420,16 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
               {state.thingsToAdd.length > 0 ? (
                 state.thingsToAdd.map((item, index) => (
                   <div key={index} className="space-y-1 border-b border-emerald-950/20 pb-2.5 last:border-0 last:pb-0">
-                    <h5 className="font-bold text-sm text-slate-200">{item.title}</h5>
-                    <p className="text-xs text-slate-400 leading-normal">{item.reason}</p>
+                    <h5 className="font-bold text-slate-200">{item.title}</h5>
+                    <p className="text-slate-400 leading-normal">{item.reason}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
+                <p className="text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
               )}
             </CardContent>
           </Card>
 
-          {/* Remover */}
           <Card className="border-rose-500/10 bg-rose-950/5 text-slate-200">
             <CardHeader className="border-b border-rose-950/20 pb-4">
               <div className="flex items-center gap-2">
@@ -473,12 +441,12 @@ ${state.thingsToRemove.map(t => `- **${t.title}**: ${t.reason}`).join("\n")}
               {state.thingsToRemove.length > 0 ? (
                 state.thingsToRemove.map((item, index) => (
                   <div key={index} className="space-y-1 border-b border-rose-950/20 pb-2.5 last:border-0 last:pb-0">
-                    <h5 className="font-bold text-sm text-slate-200">{item.title}</h5>
-                    <p className="text-xs text-slate-400 leading-normal">{item.reason}</p>
+                    <h5 className="font-bold text-slate-200">{item.title}</h5>
+                    <p className="text-slate-400 leading-normal">{item.reason}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
+                <p className="text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
               )}
             </CardContent>
           </Card>
