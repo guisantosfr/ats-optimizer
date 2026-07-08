@@ -101,8 +101,8 @@ export default function Home() {
           </div>
           <div className="space-y-2">
             <h2 className="text-xl font-bold text-slate-100">Otimizando seu currículo...</h2>
-            <p className="text-sm text-slate-400 max-w-xs">
-              Nossa inteligência artificial está analisando a vaga e reestruturando seus dados para passar no ATS.
+            <p className="text-slate-400 max-w-xs">
+              Nossa IA está analisando a vaga e reestruturando seus dados para passar no ATS.
             </p>
           </div>
           <div className="w-full space-y-3 pt-4 border-t border-sky-950/40">

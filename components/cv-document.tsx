@@ -160,13 +160,20 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ data }) => {
         {skills && skills.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Principais Competências</Text>
-            <View style={styles.skillsContainer}>
-              {skills.map((skill, index) => (
-                <Text key={index} style={styles.skillText}>
-                  {skill}
+            {skills.map((cat, index) => (
+              <View key={index} style={{ marginBottom: 5 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 9, color: "#1e293b", marginBottom: 2 }}>
+                  {cat.category}
                 </Text>
-              ))}
-            </View>
+                <View style={styles.skillsContainer}>
+                  {cat.items && cat.items.map((skill, idx) => (
+                    <Text key={idx} style={styles.skillText}>
+                      {skill}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            ))}
           </View>
         )}
 

@@ -1,6 +1,7 @@
 "use server";
 
 import { ai } from "@/lib/gemini";
+import { Type } from "@google/genai";
 
 export interface OptimizedLinkedinResult {
   metadata: {
@@ -17,24 +18,62 @@ export interface OptimizedLinkedinResult {
     period: string;
     bullets: string[];
   }[];
-  skills: string[];
   education: {
     institution: string;
     degree: string;
     period: string;
   }[];
+  skills: {
+    category: string;
+    items: string[];
+  }[];
+  thingsToRemove: {
+    title: string;
+    reason: string;
+  }[];
+  thingsToAdd: {
+    title: string;
+    reason: string;
+  }[];
+  scores: {
+    geral: number;
+    resumo: number;
+    experiencia: number;
+    habilidades: number;
+    cursos: number;
+  };
 }
 
 export interface OptimizedGupyResult {
-  aboutMe: string;
+  scores: {
+    geral: number;
+    experiencias: number;
+    cursosCertificados: number;
+    habilidades: number;
+  };
+  keywords: string[];
   experiences: {
     company: string;
     role: string;
     period: string;
+    activitiesDescription: string;
+  }[];
+  courses: {
+    type: 'course' | 'certification' | 'acknowledgment' | 'volunteer_work';
+    title: string;
     description: string;
   }[];
-  skills: string;
-  additionalInfo: string;
+  skills: string[];
+  coverLetter: string;
+  top3Strengths: string[];
+  thingsToRemove: {
+    title: string;
+    reason: string;
+  }[];
+  thingsToAdd: {
+    title: string;
+    reason: string;
+  }[];
 }
 
 const linkedinSchema = {
@@ -68,10 +107,6 @@ const linkedinSchema = {
         required: ["company", "role", "period", "bullets"]
       }
     },
-    skills: {
-      type: "array",
-      items: { type: "string" }
-    },
     education: {
       type: "array",
       items: {
@@ -83,32 +118,151 @@ const linkedinSchema = {
         },
         required: ["institution", "degree", "period"]
       }
+    },
+    skills: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          category: { type: Type.STRING },
+          items: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          }
+        },
+        required: ["category", "items"]
+      }
+    },
+    thingsToRemove: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          reason: { type: Type.STRING },
+        },
+        required: ['title', 'reason']
+      }
+    },
+    thingsToAdd: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          reason: { type: Type.STRING },
+        },
+        required: ['title', 'reason']
+      }
+    },
+    scores: {
+      type: Type.OBJECT,
+      properties: {
+        geral: { type: Type.NUMBER },
+        resumo: { type: Type.NUMBER },
+        experiencia: { type: Type.NUMBER },
+        habilidades: { type: Type.NUMBER },
+        cursos: { type: Type.NUMBER }
+      },
+      required: ["geral", "resumo", "experiencia", "habilidades", "cursos"]
     }
   },
-  required: ["metadata", "headline", "summary", "experience", "skills", "education"]
+  required: ["metadata", "headline", "summary", "experience", "skills", "education", "thingsToRemove", "thingsToAdd", "scores"]
 };
 
 const gupySchema = {
-  type: "object",
+  type: Type.OBJECT,
   properties: {
-    aboutMe: { type: "string" },
-    experiences: {
-      type: "array",
+    scores: {
+      type: Type.OBJECT,
+      properties: {
+        geral: { type: Type.NUMBER },
+        experiencias: { type: Type.NUMBER },
+        cursosCertificados: { type: Type.NUMBER },
+        habilidades: { type: Type.NUMBER }
+      },
+      required: ["geral", "experiencias", "cursosCertificados", "habilidades"]
+    },
+    keywords: {
+      type: Type.ARRAY,
       items: {
-        type: "object",
-        properties: {
-          company: { type: "string" },
-          role: { type: "string" },
-          period: { type: "string" },
-          description: { type: "string" }
-        },
-        required: ["company", "role", "period", "description"]
+        type: Type.STRING
       }
     },
-    skills: { type: "string" },
-    additionalInfo: { type: "string" }
+    experiences: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          company: { type: Type.STRING },
+          role: { type: Type.STRING },
+          period: { type: Type.STRING },
+          activitiesDescription: { type: Type.STRING },
+        },
+        required: ['company', 'role', 'period', 'activitiesDescription']
+      }
+    },
+    courses: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          type: { type: Type.STRING, enum: ['course', 'certification', 'acknowledgment', 'volunteer_work'] },
+          title: { type: Type.STRING },
+          description: { type: Type.STRING },
+        },
+        required: ['type', 'title', 'description']
+      }
+    },
+    skills: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.STRING
+      }
+    },
+    coverLetter: {
+      type: Type.STRING
+    },
+    top3Strengths: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.STRING
+      }
+    },
+    thingsToRemove: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          reason: { type: Type.STRING },
+        },
+        required: ['title', 'reason']
+      }
+    },
+    thingsToAdd: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          reason: { type: Type.STRING },
+        },
+        required: ['title', 'reason']
+      }
+    }
   },
-  required: ["aboutMe", "experiences", "skills", "additionalInfo"]
+  required: [
+    "scores",
+    "keywords",
+    "experiences",
+    "courses",
+    "skills",
+    "coverLetter",
+    "top3Strengths",
+    "thingsToRemove",
+    "thingsToAdd"
+  ]
 };
 
 export async function optimizeForLinkedin(
@@ -121,29 +275,31 @@ export async function optimizeForLinkedin(
 
   try {
     const prompt = `
-Você é um especialista em recrutamento e seleção (Tech Recruiter) e otimização de currículos para ATS.
-Seu objetivo é analisar o currículo do candidato e a descrição da vaga fornecidos abaixo, e reescrever o currículo otimizando-o para passar nos filtros de ATS e atrair recrutadores no LinkedIn.
+      Você é um especialista em recrutamento e seleção (Tech Recruiter) e otimização de currículos para ATS.
+      Seu objetivo é analisar o currículo do candidato e a descrição da vaga fornecidos abaixo, e reescrever o currículo otimizando-o para passar nos filtros de ATS e atrair recrutadores no LinkedIn.
 
-Currículo Atual:
-${resumeText}
+      Currículo Atual:
+      ${resumeText}
 
-Descrição da Vaga:
-${jobDescription}
+      Descrição da Vaga:
+      ${jobDescription}
 
-Instruções importantes:
-1. Adapte o currículo para destacar as experiências, competências e conquistas mais relevantes para a vaga.
-2. Identifique as palavras-chave mais importantes da descrição da vaga e as insira de forma natural ao longo do texto.
-3. Crie um 'headline' profissional e chamativo de uma linha (ex: "Desenvolvedor Frontend Sênior | React | Next.js | TypeScript").
-4. Crie um resumo profissional ('summary') conciso e impactante na primeira pessoa do singular ou terceira pessoa.
-5. Reescreva as experiências profissionais ('experience'), estruturando cada atividade com bullet points acionáveis, focados em resultados/conquistas quantificáveis (ex: "Aumentei a performance em 20% utilizando Next.js").
-6. Extraia as principais competências ('skills') que combinam com a vaga.
-7. Mantenha os dados de educação ('education') do candidato originais, mas adapte se necessário o período ou formatação.
-8. Gere metadados adequados para o PDF:
-   - title: Ex. "Curriculo_Otimizado_[Nome_do_Candidato]"
-   - author: Nome do Candidato (extraia do currículo)
-   - subject: Cargo almejado (ex: "Desenvolvedor React")
-   - keywords: Lista de palavras-chave separadas por vírgula.
-`;
+      Instruções importantes:
+      1. Compare as informações do currículo base e da vaga e retorne uma nota de 0 a 100 para cada seção no objeto 'scores' (dividido em: geral, resumo, experiencia, habilidades e cursos).
+      2. Adapte o currículo para destacar as experiências, competências e conquistas mais relevantes para a vaga.
+      3. Identifique as palavras-chave mais importantes da descrição da vaga e as insira de forma natural ao longo do texto.
+      4. Crie um resumo profissional ('summary') conciso e impactante na primeira pessoa do singular ou terceira pessoa.
+      5. Reescreva as experiências profissionais ('experience'), estruturando cada atividade com bullet points acionáveis, focados em impacto ou resultados/conquistas quantificáveis, se existirem. (ex: "Aumentei a performance em 20% utilizando Next.js").
+      6. Não invente informações que não estejam no currículo base.
+      7. Extraia e divida as principais competências ('skills') por categorias lógicas (ex: "Front-end", "Back-end", "Metodologias", "Idiomas", etc.) em um formato de lista de objetos com 'category' e 'items'.
+      8. Mantenha os dados de educação ('education') do candidato originais, mas adapte se necessário a formatação, se necessário.
+      9. Gere metadados adequados para o PDF:
+        - title: Ex. "Curriculo_Otimizado_[Nome_do_Candidato]"
+        - author: Nome do Candidato (extraia do currículo)
+        - subject: Cargo almejado (ex: "Desenvolvedor React")
+        - keywords: Lista de palavras-chave separadas por vírgula.
+      10. Inclua duas seções extras à parte, com coisas a incluir e coisas a remover para melhorar o currículo, com justificativas. 
+    `;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -176,22 +332,55 @@ export async function optimizeForGupy(
 
   try {
     const prompt = `
-Você é um especialista em otimização de currículos para a plataforma Gupy.
-A plataforma Gupy usa inteligência artificial (a IA 'Gaia') para ranquear os candidatos com base na aderência da descrição das experiências e competências com os requisitos da vaga.
-Seu objetivo é reescrever e estruturar as informações do candidato para preenchimento direto nos campos da Gupy, maximizando a nota de aderência.
+      Você é um especialista em ATS e otimização de currículos para a plataforma Gupy.
+      A plataforma Gupy usa inteligência artificial (a IA 'Gaia') para ranquear os candidatos com base na aderência da descrição das experiências e competências com os requisitos da vaga.
+      Seu objetivo é reescrever e estruturar as informações do candidato para preenchimento direto nos campos da Gupy, maximizando a nota de aderência.
 
-Currículo Atual:
-${resumeText}
+      Currículo Base:
+      ${resumeText}
 
-Descrição da Vaga:
-${jobDescription}
+      Descrição da Vaga:
+      ${jobDescription}
 
-Instruções importantes:
-1. "Sobre você" ('aboutMe'): Escreva um texto focado em resultados, citando as tecnologias e competências exigidas pela vaga de forma estratégica. Deve ter cerca de 1 a 2 parágrafos.
-2. "Experiências Profissionais" ('experiences'): Reescreva as atividades de cada empresa focando no que a vaga exige. Use bullet points claros, iniciando com verbos de ação no passado (ex: "Desenvolvi...", "Liderei..."). Destaque os termos técnicos que a IA da Gupy vai buscar. Mantenha os nomes das empresas e períodos originais do currículo.
-3. "Competências" ('skills'): Liste as competências técnicas e comportamentais mais relevantes separadas por vírgula.
-4. "Informações Adicionais" ('additionalInfo'): Destaque certificações, cursos e projetos do currículo que tenham sinergia com a vaga.
-`;
+      Primeiramente, Compare os dados do currículo com o perfil ideal da vaga, considerando cargo, área, nível de experiência, habilidades exigidas, formação mínima, idiomas e outros requisitos específicos.
+
+      Meça o grau de correspondência em cada seção e atribua pontuação proporcional de 0 a 100 no objeto 'scores', dividindo em: geral, experiencias, cursosCertificados e habilidades.
+
+      CAMPOS DE ALTO PESO
+      - Habilidades: comparadas diretamente com os requisitos técnicos da vaga. Sobreposição alta gera pontuação alta. Sobreposição baixa
+      gera pontuação baixa mesmo com experiência real.
+      - Título do cargo nas experiências: comparado com o cargo da vaga. Títulos padrão de mercado geram mais compatibilidade do que títulos internos ou genéricos.
+      - Resumo profissional (Carta de Apresentação): lido para identificar palavras-chave de área e posicionamento. Resumos com termos técnicos específicos geram
+      mais indexação do que resumos genéricos.
+      - Nível de experiência: calculated a partir das datas dos cargos e comparado com o nível exigido pela vaga.
+
+      CAMPOS DE PESO MÉDIO
+      - Descrições de experiência: campo com maior volume de texto e maior superfície de sobreposição com palavras-chave da vaga.
+      - Formação: comparada com o requisito de escolaridade. Quando a vaga exige área específica de formação, o peso é maior.
+      - Idiomas: eliminatório quando a vaga configura idioma como filtro mínimo.
+
+      COMPLETUDE
+      - Certificações relevantes: quando a vaga exige ou valoriza certificações específicas, esse campo tem peso direto na pontuação
+
+      Depois, reescreva os dados do currículo de modo a maximizar as pontuações, com as seguintes regras adicionais:
+
+      Carta de Apresentação (coverLetter): 
+      - 1ª linha - cargo padrão, especialidade, anos de experiência e segmento
+      - 2ª linha - o que entrega e a ferramenta ou método principal
+      Todo o resumo deve usar os termos técnicos da área com os nomes exatos
+
+      Descrições das experiências:
+      - Estrutura: ação + ferramenta + impacto ou resultado
+      - Para cada responsabilidade, especificar com qual ferramenta ou método foi executada e qual impacto ou resultado gerou.
+      - Os termos técnicos devem aparecer nas frases de forma natural e contextualizada
+      - Preencha os campos 'company' e 'period' com os dados originais do currículo para cada experiência.
+
+      Inclua também:
+      - Itens que podem ser removidos por prejudicarem a nota final (com justificativa).
+      - Itens que não estão no currículo e que podem ser adicionados para aumentar a nota final (com justificativa)
+
+      Retorne os dados no formato JSON especificado abaixo:
+    `;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
@@ -209,7 +398,7 @@ Instruções importantes:
     const data = JSON.parse(response.text) as OptimizedGupyResult;
     return { success: true, data };
   } catch (error: any) {
-    console.error("Erro na action optimizeForGupy:", error);
+    console.error("Erro ao otimizar para Gupy:", error);
     return { success: false, error: error.message || "Erro ao comunicar com a API do Gemini." };
   }
 }

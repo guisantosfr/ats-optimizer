@@ -9,7 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2 } from "lucide-react";
+import { 
+  FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2, 
+  PlusCircle, AlertTriangle, Sparkles 
+} from "lucide-react";
 
 interface LinkedinResultProps {
   initialData: OptimizedLinkedinResult;
@@ -20,23 +23,9 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
   const [data, setData] = useState<OptimizedLinkedinResult>(initialData);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Estados locais para inputs que necessitam de formatação especial (como arrays mapeados para texto)
-  const [skillsText, setSkillsText] = useState<string>(initialData.skills.join(", "));
-  
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Sincronizar campo de texto de competências
-  const handleSkillsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const text = e.target.value;
-    setSkillsText(text);
-    const parsedSkills = text
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s !== "");
-    setData((prev) => ({ ...prev, skills: parsedSkills }));
-  };
 
   // Atualizar dados do cabeçalho / metadados
   const handleMetadataChange = (key: string, value: string) => {
@@ -123,6 +112,44 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
     }));
   };
 
+  // Sincronizar competências categorizadas
+  const handleCategoryNameChange = (index: number, name: string) => {
+    setData((prev) => {
+      const newSkills = [...prev.skills];
+      newSkills[index] = { ...newSkills[index], category: name };
+      return { ...prev, skills: newSkills };
+    });
+  };
+
+  const handleCategoryItemsChange = (index: number, text: string) => {
+    const items = text.split(",").map((s) => s.trim()).filter((s) => s !== "");
+    setData((prev) => {
+      const newSkills = [...prev.skills];
+      newSkills[index] = { ...newSkills[index], items };
+      return { ...prev, skills: newSkills };
+    });
+  };
+
+  const addSkillCategory = () => {
+    setData((prev) => ({
+      ...prev,
+      skills: [...(prev.skills || []), { category: "Nova Categoria", items: [] }],
+    }));
+  };
+
+  const removeSkillCategory = (index: number) => {
+    setData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, idx) => idx !== index),
+    }));
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-emerald-400 border-emerald-500/20 bg-emerald-500/5";
+    if (score >= 50) return "text-amber-400 border-amber-500/20 bg-amber-500/5";
+    return "text-rose-400 border-rose-500/20 bg-rose-500/5";
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto px-4 py-8 animate-fade-in">
       {/* Top Header */}
@@ -162,6 +189,35 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             )}
           </PDFDownloadLink>
         )}
+      </div>
+
+      {/* Dashboard de Scores */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        {/* Score Geral */}
+        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.geral)}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Geral</span>
+          <div className="text-2xl font-extrabold">{data.scores.geral}%</div>
+        </Card>
+        {/* Score Resumo */}
+        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.resumo)}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Resumo</span>
+          <div className="text-2xl font-extrabold">{data.scores.resumo}%</div>
+        </Card>
+        {/* Score Experiência */}
+        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.experiencia)}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Experiência</span>
+          <div className="text-2xl font-extrabold">{data.scores.experiencia}%</div>
+        </Card>
+        {/* Score Habilidades */}
+        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.habilidades)}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Habilidades</span>
+          <div className="text-2xl font-extrabold">{data.scores.habilidades}%</div>
+        </Card>
+        {/* Score Cursos */}
+        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.cursos)}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Formação/Cursos</span>
+          <div className="text-2xl font-extrabold">{data.scores.cursos}%</div>
+        </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -315,32 +371,58 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             </CardContent>
           </Card>
 
-          {/* Competências */}
+          {/* Competências Categorizadas */}
           <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4">
-              <CardTitle className="text-lg text-sky-300">Competências</CardTitle>
-              <CardDescription className="text-slate-400">
-                Liste as competências técnicas e comportamentais relevantes separadas por vírgula.
-              </CardDescription>
+            <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-lg text-sky-300">Competências</CardTitle>
+                <CardDescription className="text-slate-400">
+                  Organize suas competências em categorias (ex: Front-end, Back-end).
+                </CardDescription>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addSkillCategory}
+                className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+              >
+                <Plus className="h-4 w-4" /> Add Categoria
+              </Button>
             </CardHeader>
             <CardContent className="space-y-4 pt-5">
-              <Textarea
-                value={skillsText}
-                rows={3}
-                onChange={handleSkillsChange}
-                className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 resize-y"
-                placeholder="Ex: React, Next.js, Node.js, TypeScript, Liderança Técnica"
-              />
-              <div className="flex flex-wrap gap-1.5 mt-2">
-                {data.skills.map((skill, index) => (
-                  <span
-                    key={index}
-                    className="bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs px-2 py-0.5 rounded"
+              {data.skills && data.skills.map((cat, index) => (
+                <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-3 relative">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeSkillCategory(index)}
+                    className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                   >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                  
+                  <div className="space-y-1 pr-8">
+                    <Label className="text-xs text-slate-400">Nome da Categoria</Label>
+                    <Input
+                      value={cat.category}
+                      onChange={(e) => handleCategoryNameChange(index, e.target.value)}
+                      className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                      placeholder="Ex: Front-end, Back-end, Soft Skills"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs text-slate-400">Itens (Separados por vírgula)</Label>
+                    <Input
+                      value={cat.items ? cat.items.join(", ") : ""}
+                      onChange={(e) => handleCategoryItemsChange(index, e.target.value)}
+                      className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                      placeholder="Ex: React, Next.js, HTML, CSS"
+                    />
+                  </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
 
@@ -403,6 +485,54 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
               ))}
             </CardContent>
           </Card>
+
+          {/* Recomendações de Aprimoramento */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Adicionar */}
+            <Card className="border-emerald-500/10 bg-emerald-950/5 text-slate-200">
+              <CardHeader className="border-b border-emerald-950/20 pb-4">
+                <div className="flex items-center gap-2">
+                  <PlusCircle className="h-4 w-4 text-emerald-400" />
+                  <CardTitle className="text-xs font-semibold text-emerald-300">Itens recomendados para Adicionar</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-3">
+                {data.thingsToAdd && data.thingsToAdd.length > 0 ? (
+                  data.thingsToAdd.map((item, index) => (
+                    <div key={index} className="space-y-1 border-b border-emerald-950/20 pb-2 last:border-0 last:pb-0">
+                      <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
+                      <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Remover */}
+            <Card className="border-rose-500/10 bg-rose-950/5 text-slate-200">
+              <CardHeader className="border-b border-rose-950/20 pb-4">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-rose-400" />
+                  <CardTitle className="text-xs font-semibold text-rose-300">Itens recomendados para Remover</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-3">
+                {data.thingsToRemove && data.thingsToRemove.length > 0 ? (
+                  data.thingsToRemove.map((item, index) => (
+                    <div key={index} className="space-y-1 border-b border-rose-950/20 pb-2 last:border-0 last:pb-0">
+                      <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
+                      <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
         </div>
 
         {/* Visualização do PDF */}
