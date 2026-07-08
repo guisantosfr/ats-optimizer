@@ -56,7 +56,7 @@ export interface OptimizedGupyResult {
     company: string;
     role: string;
     period: string;
-    activitiesDescription: string;
+    bullets: string[];
   }[];
   courses: {
     type: 'course' | 'certification' | 'acknowledgment' | 'volunteer_work';
@@ -74,6 +74,7 @@ export interface OptimizedGupyResult {
     title: string;
     reason: string;
   }[];
+  filename: string;
 }
 
 const linkedinSchema = {
@@ -197,9 +198,12 @@ const gupySchema = {
           company: { type: Type.STRING },
           role: { type: Type.STRING },
           period: { type: Type.STRING },
-          activitiesDescription: { type: Type.STRING },
+          bullets: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          }
         },
-        required: ['company', 'role', 'period', 'activitiesDescription']
+        required: ['company', 'role', 'period', 'bullets']
       }
     },
     courses: {
@@ -250,6 +254,9 @@ const gupySchema = {
         },
         required: ['title', 'reason']
       }
+    },
+    filename: {
+      type: Type.STRING
     }
   },
   required: [
@@ -261,7 +268,8 @@ const gupySchema = {
     "coverLetter",
     "top3Strengths",
     "thingsToRemove",
-    "thingsToAdd"
+    "thingsToAdd",
+    "filename"
   ]
 };
 
@@ -369,11 +377,17 @@ export async function optimizeForGupy(
       - 2ª linha - o que entrega e a ferramenta ou método principal
       Todo o resumo deve usar os termos técnicos da área com os nomes exatos
 
-      Descrições das experiências:
-      - Estrutura: ação + ferramenta + impacto ou resultado
-      - Para cada responsabilidade, especificar com qual ferramenta ou método foi executada e qual impacto ou resultado gerou.
-      - Os termos técnicos devem aparecer nas frases de forma natural e contextualizada
+      Descrições das experiências (experiences):
+      - Em vez de um texto extenso, retorne uma lista de bullet points ('bullets') para cada experiência.
+      - Cada bullet point deve seguir a estrutura: ação + ferramenta + impacto ou resultado (ex: "Desenvolvi APIs RESTful com Node.js reduzindo o tempo de carregamento de dados em 15%").
+      - Os termos técnicos devem aparecer nos bullet points de forma natural e contextualizada.
       - Preencha os campos 'company' e 'period' com os dados originais do currículo para cada experiência.
+
+      Top 3 Competências (top3Strengths):
+      - Devem ser obrigatoriamente 3 tags curtas de palavras/expressões chave técnicas relevantes para a vaga (ex: "React", "Node.js", "AWS"), NUNCA textos longos ou descrições.
+
+      Nome do arquivo (filename):
+      - Sugira um nome de arquivo adequado para salvar esta otimização da Gupy como Markdown, no formato "gupy_otimizado_[nome_do_candidato].md".
 
       Inclua também:
       - Itens que podem ser removidos por prejudicarem a nota final (com justificativa).

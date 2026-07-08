@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
-  FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2, 
-  PlusCircle, AlertTriangle, Sparkles 
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2,
+  PlusCircle, AlertTriangle, Sparkles, ChevronDown
 } from "lucide-react";
 
 interface LinkedinResultProps {
@@ -222,315 +223,374 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Formulário de Edição */}
-        <div className="flex flex-col gap-6 max-h-[75vh] overflow-y-auto pr-2 custom-scrollbar">
+        <div className="flex flex-col gap-6 max-h-[90vh] overflow-y-auto pr-2 custom-scrollbar">
           
           {/* Dados Principais */}
-          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4">
-              <CardTitle className="text-lg text-sky-300">Dados Principais & Metadados do PDF</CardTitle>
-              <CardDescription className="text-slate-400">
-                Estes campos definem as informações de contato principais e o cabeçalho do currículo.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="author" className="text-sm font-semibold text-slate-300">Nome do Candidato (Autor)</Label>
-                  <Input
-                    id="author"
-                    value={data.metadata.author}
-                    onChange={(e) => handleMetadataChange("author", e.target.value)}
-                    className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="pdfTitle" className="text-sm font-semibold text-slate-300">Título do Arquivo PDF</Label>
-                  <Input
-                    id="pdfTitle"
-                    value={data.metadata.title}
-                    onChange={(e) => handleMetadataChange("title", e.target.value)}
-                    className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
-                  />
-                </div>
-              </div>
+          <Collapsible defaultOpen={true}>
+            <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
+              <CollapsibleTrigger className="w-full text-left block">
+                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg text-sky-300">Dados Principais & Metadados do PDF</CardTitle>
+                    <CardDescription className="text-slate-400">
+                      Estes campos definem as informações de contato principais e o cabeçalho do currículo.
+                    </CardDescription>
+                  </div>
+                  <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4 pt-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="author" className="text-sm font-semibold text-slate-300">Nome do Candidato (Autor)</Label>
+                      <Input
+                        id="author"
+                        value={data.metadata.author}
+                        onChange={(e) => handleMetadataChange("author", e.target.value)}
+                        className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="pdfTitle" className="text-sm font-semibold text-slate-300">Título do Arquivo PDF</Label>
+                      <Input
+                        id="pdfTitle"
+                        value={data.metadata.title}
+                        onChange={(e) => handleMetadataChange("title", e.target.value)}
+                        className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
+                      />
+                    </div>
+                  </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="subject" className="text-sm font-semibold text-slate-300">Assunto / Cargo Almejado</Label>
-                  <Input
-                    id="subject"
-                    value={data.metadata.subject}
-                    onChange={(e) => handleMetadataChange("subject", e.target.value)}
-                    className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="keywords" className="text-sm font-semibold text-slate-300">Palavras-chave (Separadas por vírgula)</Label>
-                  <Input
-                    id="keywords"
-                    value={data.metadata.keywords}
-                    onChange={(e) => handleMetadataChange("keywords", e.target.value)}
-                    className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="subject" className="text-sm font-semibold text-slate-300">Assunto / Cargo Almejado</Label>
+                      <Input
+                        id="subject"
+                        value={data.metadata.subject}
+                        onChange={(e) => handleMetadataChange("subject", e.target.value)}
+                        className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="keywords" className="text-sm font-semibold text-slate-300">Palavras-chave (Separadas por vírgula)</Label>
+                      <Input
+                        id="keywords"
+                        value={data.metadata.keywords}
+                        onChange={(e) => handleMetadataChange("keywords", e.target.value)}
+                        className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
+                      />
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="headline" className="text-sm font-semibold text-slate-300">Título Profissional (Headline)</Label>
-                <Input
-                  id="headline"
-                  value={data.headline}
-                  onChange={(e) => handleSimpleFieldChange("headline", e.target.value)}
-                  className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="headline" className="text-sm font-semibold text-slate-300">Título Profissional (Headline)</Label>
+                    <Input
+                      id="headline"
+                      value={data.headline}
+                      onChange={(e) => handleSimpleFieldChange("headline", e.target.value)}
+                      className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="summary" className="text-sm font-semibold text-slate-300">Resumo Profissional</Label>
-                <Textarea
-                  id="summary"
-                  value={data.summary}
-                  rows={4}
-                  onChange={(e) => handleSimpleFieldChange("summary", e.target.value)}
-                  className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 resize-y"
-                />
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="summary" className="text-sm font-semibold text-slate-300">Resumo Profissional</Label>
+                    <Textarea
+                      id="summary"
+                      value={data.summary}
+                      rows={4}
+                      onChange={(e) => handleSimpleFieldChange("summary", e.target.value)}
+                      className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 resize-y"
+                    />
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           {/* Experiência Profissional */}
-          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg text-sky-300">Experiências Profissionais</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Descreva suas experiências passadas estruturando os bullet points.
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addExperience}
-                className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-              >
-                <Plus className="h-4 w-4" /> Add
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-6 pt-5">
-              {data.experience.map((exp, index) => (
-                <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-4 relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeExperience(index)}
-                    className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Empresa</Label>
-                      <Input
-                        value={exp.company}
-                        onChange={(e) => handleExperienceChange(index, "company", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Cargo</Label>
-                      <Input
-                        value={exp.role}
-                        onChange={(e) => handleExperienceChange(index, "role", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Período</Label>
-                      <Input
-                        value={exp.period}
-                        onChange={(e) => handleExperienceChange(index, "period", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
-                  </div>
-
+          <Collapsible defaultOpen={true}>
+            <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
+              <CollapsibleTrigger className="w-full text-left block">
+                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
                   <div className="space-y-1">
-                    <Label className="text-xs text-slate-400">
-                      Atividades (Uma por linha. Inicie com verbos de ação e conquistas quantificáveis)
-                    </Label>
-                    <Textarea
-                      defaultValue={exp.bullets.join("\n")}
-                      rows={4}
-                      onChange={(e) => handleExperienceBulletsChange(index, e.target.value)}
-                      className="bg-slate-950 border-slate-800 text-slate-100 text-sm resize-y"
-                    />
+                    <CardTitle className="text-lg text-sky-300">Experiências Profissionais</CardTitle>
+                    <CardDescription className="text-slate-400">
+                      Descreva suas experiências passadas estruturando os bullet points.
+                    </CardDescription>
                   </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addExperience();
+                      }}
+                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                    >
+                      <Plus className="h-4 w-4" /> Add
+                    </Button>
+                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-6 pt-5">
+                  {data.experience.map((exp, index) => (
+                    <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-4 relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeExperience(index)}
+                        className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Empresa</Label>
+                          <Input
+                            value={exp.company}
+                            onChange={(e) => handleExperienceChange(index, "company", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Cargo</Label>
+                          <Input
+                            value={exp.role}
+                            onChange={(e) => handleExperienceChange(index, "role", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Período</Label>
+                          <Input
+                            value={exp.period}
+                            onChange={(e) => handleExperienceChange(index, "period", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-xs text-slate-400">
+                          Atividades (Uma por linha. Inicie com verbos de ação e conquistas quantificáveis)
+                        </Label>
+                        <Textarea
+                          defaultValue={exp.bullets.join("\n")}
+                          rows={4}
+                          onChange={(e) => handleExperienceBulletsChange(index, e.target.value)}
+                          className="bg-slate-950 border-slate-800 text-slate-100 text-sm resize-y"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           {/* Competências Categorizadas */}
-          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg text-sky-300">Competências</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Organize suas competências em categorias (ex: Front-end, Back-end).
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addSkillCategory}
-                className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-              >
-                <Plus className="h-4 w-4" /> Add Categoria
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-5">
-              {data.skills && data.skills.map((cat, index) => (
-                <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-3 relative">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeSkillCategory(index)}
-                    className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                  
-                  <div className="space-y-1 pr-8">
-                    <Label className="text-xs text-slate-400">Nome da Categoria</Label>
-                    <Input
-                      value={cat.category}
-                      onChange={(e) => handleCategoryNameChange(index, e.target.value)}
-                      className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      placeholder="Ex: Front-end, Back-end, Soft Skills"
-                    />
-                  </div>
-
+          <Collapsible defaultOpen={true}>
+            <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
+              <CollapsibleTrigger className="w-full text-left block">
+                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
                   <div className="space-y-1">
-                    <Label className="text-xs text-slate-400">Itens (Separados por vírgula)</Label>
-                    <Input
-                      value={cat.items ? cat.items.join(", ") : ""}
-                      onChange={(e) => handleCategoryItemsChange(index, e.target.value)}
-                      className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      placeholder="Ex: React, Next.js, HTML, CSS"
-                    />
+                    <CardTitle className="text-lg text-sky-300">Competências</CardTitle>
+                    <CardDescription className="text-slate-400">
+                      Organize suas competências em categorias (ex: Front-end, Back-end).
+                    </CardDescription>
                   </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addSkillCategory();
+                      }}
+                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                    >
+                      <Plus className="h-4 w-4" /> Add Categoria
+                    </Button>
+                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4 pt-5">
+                  {data.skills && data.skills.map((cat, index) => (
+                    <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-3 relative">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeSkillCategory(index)}
+                        className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+
+                      <div className="space-y-1 pr-8">
+                        <Label className="text-xs text-slate-400">Nome da Categoria</Label>
+                        <Input
+                          value={cat.category}
+                          onChange={(e) => handleCategoryNameChange(index, e.target.value)}
+                          className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          placeholder="Ex: Front-end, Back-end, Soft Skills"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <Label className="text-xs text-slate-400">Itens (Separados por vírgula)</Label>
+                        <Input
+                          value={cat.items ? cat.items.join(", ") : ""}
+                          onChange={(e) => handleCategoryItemsChange(index, e.target.value)}
+                          className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          placeholder="Ex: React, Next.js, HTML, CSS"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           {/* Formação Acadêmica */}
-          <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-            <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg text-sky-300">Formação Acadêmica</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Cadastre suas formações, cursos acadêmicos ou certificações superiores.
-                </CardDescription>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addEducation}
-                className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-              >
-                <Plus className="h-4 w-4" /> Add
-              </Button>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-5">
-              {data.education.map((edu, index) => (
-                <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-3 relative">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeEducation(index)}
-                    className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Instituição</Label>
-                      <Input
-                        value={edu.institution}
-                        onChange={(e) => handleEducationChange(index, "institution", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Curso / Grau</Label>
-                      <Input
-                        value={edu.degree}
-                        onChange={(e) => handleEducationChange(index, "degree", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label className="text-xs text-slate-400">Período</Label>
-                      <Input
-                        value={edu.period}
-                        onChange={(e) => handleEducationChange(index, "period", e.target.value)}
-                        className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
-                      />
-                    </div>
+          <Collapsible defaultOpen={true}>
+            <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
+              <CollapsibleTrigger className="w-full text-left block">
+                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+                  <div className="space-y-1">
+                    <CardTitle className="text-lg text-sky-300">Formação Acadêmica</CardTitle>
+                    <CardDescription className="text-slate-400">
+                      Cadastre suas formações, cursos acadêmicos ou certificações superiores.
+                    </CardDescription>
                   </div>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addEducation();
+                      }}
+                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                    >
+                      <Plus className="h-4 w-4" /> Add
+                    </Button>
+                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                  </div>
+                </CardHeader>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <CardContent className="space-y-4 pt-5">
+                  {data.education.map((edu, index) => (
+                    <div key={index} className="p-4 rounded-lg bg-slate-950/50 border border-slate-850 space-y-3 relative">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeEducation(index)}
+                        className="absolute top-2 right-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Instituição</Label>
+                          <Input
+                            value={edu.institution}
+                            onChange={(e) => handleEducationChange(index, "institution", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Curso / Grau</Label>
+                          <Input
+                            value={edu.degree}
+                            onChange={(e) => handleEducationChange(index, "degree", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <Label className="text-xs text-slate-400">Período</Label>
+                          <Input
+                            value={edu.period}
+                            onChange={(e) => handleEducationChange(index, "period", e.target.value)}
+                            className="bg-slate-950 border-slate-800 text-slate-100 h-8 text-sm"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
 
           {/* Recomendações de Aprimoramento */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Adicionar */}
-            <Card className="border-emerald-500/10 bg-emerald-950/5 text-slate-200">
-              <CardHeader className="border-b border-emerald-950/20 pb-4">
-                <div className="flex items-center gap-2">
-                  <PlusCircle className="h-4 w-4 text-emerald-400" />
-                  <CardTitle className="text-xs font-semibold text-emerald-300">Itens recomendados para Adicionar</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-3">
-                {data.thingsToAdd && data.thingsToAdd.length > 0 ? (
-                  data.thingsToAdd.map((item, index) => (
-                    <div key={index} className="space-y-1 border-b border-emerald-950/20 pb-2 last:border-0 last:pb-0">
-                      <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
-                      <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+            <Collapsible>
+              <Card className="border-emerald-500/10 bg-emerald-950/5 text-slate-200">
+                <CollapsibleTrigger className="w-full text-left block">
+                  <CardHeader className="border-b border-emerald-950/20 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+                    <div className="flex items-center gap-2">
+                      <PlusCircle className="h-4 w-4 text-emerald-400" />
+                      <CardTitle className="text-xs font-semibold text-emerald-300">Itens recomendados para Adicionar</CardTitle>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-xs text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
-                )}
-              </CardContent>
-            </Card>
+                    <ChevronDown className="h-4 w-4 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="pt-4 space-y-3">
+                    {data.thingsToAdd && data.thingsToAdd.length > 0 ? (
+                      data.thingsToAdd.map((item, index) => (
+                        <div key={index} className="space-y-1 border-b border-emerald-950/20 pb-2 last:border-0 last:pb-0">
+                          <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
+                          <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
+                    )}
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
 
             {/* Remover */}
-            <Card className="border-rose-500/10 bg-rose-950/5 text-slate-200">
-              <CardHeader className="border-b border-rose-950/20 pb-4">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-rose-400" />
-                  <CardTitle className="text-xs font-semibold text-rose-300">Itens recomendados para Remover</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-3">
-                {data.thingsToRemove && data.thingsToRemove.length > 0 ? (
-                  data.thingsToRemove.map((item, index) => (
-                    <div key={index} className="space-y-1 border-b border-rose-950/20 pb-2 last:border-0 last:pb-0">
-                      <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
-                      <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+            <Collapsible>
+              <Card className="border-rose-500/10 bg-rose-950/5 text-slate-200">
+                <CollapsibleTrigger className="w-full text-left block">
+                  <CardHeader className="border-b border-rose-950/20 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-rose-400" />
+                      <CardTitle className="text-xs font-semibold text-rose-300">Itens recomendados para Remover</CardTitle>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-xs text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
-                )}
-              </CardContent>
-            </Card>
+                    <ChevronDown className="h-4 w-4 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="pt-4 space-y-3">
+                    {data.thingsToRemove && data.thingsToRemove.length > 0 ? (
+                      data.thingsToRemove.map((item, index) => (
+                        <div key={index} className="space-y-1 border-b border-rose-950/20 pb-2 last:border-0 last:pb-0">
+                          <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
+                          <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
+                    )}
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
           </div>
 
         </div>

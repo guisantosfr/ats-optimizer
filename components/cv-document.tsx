@@ -8,25 +8,25 @@ const styles = StyleSheet.create({
     paddingVertical: 45,
     fontFamily: "Helvetica",
     fontSize: 9.5,
-    color: "#333333",
+    color: "#000000",
     lineHeight: 1.45,
   },
   header: {
     marginBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#0284c7",
+    borderBottomColor: "#000000",
     paddingBottom: 6,
   },
   name: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#0f172a",
+    color: "#000000",
     letterSpacing: 0.5,
   },
   headline: {
     fontSize: 10.5,
-    color: "#0284c7",
-    marginTop: 2,
+    color: "#333333",
+    marginTop: 8,
   },
   section: {
     marginTop: 12,
@@ -34,9 +34,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 11,
     fontWeight: "bold",
-    color: "#0f172a",
+    color: "#000000",
     borderBottomWidth: 1,
-    borderBottomColor: "#e2e8f0",
+    borderBottomColor: "#000000",
     paddingBottom: 2,
     marginBottom: 6,
     textTransform: "uppercase",
@@ -56,16 +56,16 @@ const styles = StyleSheet.create({
   },
   companyRole: {
     fontWeight: "bold",
-    color: "#0f172a",
+    color: "#000000",
     fontSize: 10,
   },
   period: {
-    color: "#64748b",
+    color: "#333333",
     fontSize: 9,
   },
   bulletPoint: {
     flexDirection: "row",
-    marginBottom: 1.5,
+    marginBottom: 2,
     paddingLeft: 6,
   },
   bullet: {
@@ -76,19 +76,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "justify",
   },
-  skillsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  skillText: {
-    fontSize: 9,
-    color: "#334155",
-    backgroundColor: "#f1f5f9",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 3,
-    marginRight: 4,
-    marginBottom: 4,
+  categoryBold: {
+    fontWeight: "bold",
   },
   educationItem: {
     marginBottom: 6,
@@ -99,7 +88,7 @@ const styles = StyleSheet.create({
   },
   institution: {
     fontWeight: "bold",
-    color: "#0f172a",
+    color: "#000000",
   },
 });
 
@@ -161,17 +150,12 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ data }) => {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Principais Competências</Text>
             {skills.map((cat, index) => (
-              <View key={index} style={{ marginBottom: 5 }}>
-                <Text style={{ fontWeight: "bold", fontSize: 9, color: "#1e293b", marginBottom: 2 }}>
-                  {cat.category}
+              <View key={index} style={styles.bulletPoint}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.bulletText}>
+                  <Text style={styles.categoryBold}>{cat.category}: </Text>
+                  {cat.items && cat.items.join(", ")}
                 </Text>
-                <View style={styles.skillsContainer}>
-                  {cat.items && cat.items.map((skill, idx) => (
-                    <Text key={idx} style={styles.skillText}>
-                      {skill}
-                    </Text>
-                  ))}
-                </View>
               </View>
             ))}
           </View>
