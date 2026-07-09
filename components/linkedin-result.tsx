@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import {
   FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2,
-  PlusCircle, AlertTriangle, Sparkles, ChevronDown
+  PlusCircle, AlertTriangle, ChevronDown
 } from "lucide-react";
 
 interface LinkedinResultProps {
@@ -185,47 +185,52 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                 className="bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 text-white font-medium shadow-lg shadow-sky-950/50 border border-sky-400/20 px-6 py-2 transition-all flex items-center gap-2"
               >
                 {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                Baixar PDF com Metadados
+                Baixar PDF
               </Button>
             )}
           </PDFDownloadLink>
         )}
       </div>
 
-      {/* Dashboard de Scores */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        {/* Score Geral */}
-        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.geral)}`}>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Geral</span>
-          <div className="text-2xl font-extrabold">{data.scores.geral}%</div>
+        <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(data.scores.geral)}`}>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Score Geral</span>
+            <div className="text-4xl font-extrabold mt-2">{data.scores.geral}%</div>
+          </CardContent>
         </Card>
-        {/* Score Resumo */}
-        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.resumo)}`}>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Resumo</span>
-          <div className="text-2xl font-extrabold">{data.scores.resumo}%</div>
+
+        <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(data.scores.resumo)}`}>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Resumo</span>
+            <div className="text-4xl font-extrabold mt-2">{data.scores.resumo}%</div>
+          </CardContent>
         </Card>
-        {/* Score Experiência */}
-        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.experiencia)}`}>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Experiência</span>
-          <div className="text-2xl font-extrabold">{data.scores.experiencia}%</div>
+
+        <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(data.scores.experiencia)}`}>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Experiência</span>
+            <div className="text-4xl font-extrabold mt-2">{data.scores.experiencia}%</div>
+          </CardContent>
         </Card>
-        {/* Score Habilidades */}
-        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.habilidades)}`}>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Habilidades</span>
-          <div className="text-2xl font-extrabold">{data.scores.habilidades}%</div>
+
+        <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(data.scores.habilidades)}`}>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Habilidades</span>
+            <div className="text-4xl font-extrabold mt-2">{data.scores.habilidades}%</div>
+          </CardContent>
         </Card>
-        {/* Score Cursos */}
-        <Card className={`border backdrop-blur-md shadow-md text-center py-3 flex flex-col justify-center ${getScoreColor(data.scores.cursos)}`}>
-          <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Formação/Cursos</span>
-          <div className="text-2xl font-extrabold">{data.scores.cursos}%</div>
+
+        <Card className={`border backdrop-blur-md shadow-lg ${getScoreColor(data.scores.cursos)}`}>
+          <CardContent className="text-center">
+            <span className="font-semibold uppercase tracking-wider opacity-80">Cursos</span>
+            <div className="text-4xl font-extrabold mt-2">{data.scores.cursos}%</div>
+          </CardContent>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        {/* Formulário de Edição */}
         <div className="flex flex-col gap-6 max-h-[90vh] overflow-y-auto pr-2 custom-scrollbar">
-          
-          {/* Dados Principais */}
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
               <CollapsibleTrigger className="w-full text-left block">
@@ -308,7 +313,6 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             </Card>
           </Collapsible>
 
-          {/* Experiência Profissional */}
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
               <CollapsibleTrigger className="w-full text-left block">
@@ -393,7 +397,6 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             </Card>
           </Collapsible>
 
-          {/* Competências Categorizadas */}
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
               <CollapsibleTrigger className="w-full text-left block">
@@ -460,7 +463,6 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             </Card>
           </Collapsible>
 
-          {/* Formação Acadêmica */}
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
               <CollapsibleTrigger className="w-full text-left block">
@@ -532,16 +534,14 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
             </Card>
           </Collapsible>
 
-          {/* Recomendações de Aprimoramento */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Adicionar */}
             <Collapsible>
               <Card className="border-emerald-500/10 bg-emerald-950/5 text-slate-200">
                 <CollapsibleTrigger className="w-full text-left block">
                   <CardHeader className="border-b border-emerald-950/20 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <PlusCircle className="h-4 w-4 text-emerald-400" />
-                      <CardTitle className="text-xs font-semibold text-emerald-300">Itens recomendados para Adicionar</CardTitle>
+                      <CardTitle className="font-semibold text-emerald-300">Itens recomendados para Adicionar</CardTitle>
                     </div>
                     <ChevronDown className="h-4 w-4 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
                   </CardHeader>
@@ -551,26 +551,25 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                     {data.thingsToAdd && data.thingsToAdd.length > 0 ? (
                       data.thingsToAdd.map((item, index) => (
                         <div key={index} className="space-y-1 border-b border-emerald-950/20 pb-2 last:border-0 last:pb-0">
-                          <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
-                          <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                          <h5 className="font-bold text-slate-200">{item.title}</h5>
+                          <p className="text-slate-400 leading-normal">{item.reason}</p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
+                      <p className="text-slate-500 italic">Nenhuma recomendação de inserção necessária.</p>
                     )}
                   </CardContent>
                 </CollapsibleContent>
               </Card>
             </Collapsible>
 
-            {/* Remover */}
             <Collapsible>
               <Card className="border-rose-500/10 bg-rose-950/5 text-slate-200">
                 <CollapsibleTrigger className="w-full text-left block">
                   <CardHeader className="border-b border-rose-950/20 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <AlertTriangle className="h-4 w-4 text-rose-400" />
-                      <CardTitle className="text-xs font-semibold text-rose-300">Itens recomendados para Remover</CardTitle>
+                      <CardTitle className="font-semibold text-rose-300">Itens recomendados para Remover</CardTitle>
                     </div>
                     <ChevronDown className="h-4 w-4 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
                   </CardHeader>
@@ -580,12 +579,12 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                     {data.thingsToRemove && data.thingsToRemove.length > 0 ? (
                       data.thingsToRemove.map((item, index) => (
                         <div key={index} className="space-y-1 border-b border-rose-950/20 pb-2 last:border-0 last:pb-0">
-                          <h5 className="font-bold text-xs text-slate-200">{item.title}</h5>
-                          <p className="text-[11px] text-slate-400 leading-normal">{item.reason}</p>
+                          <h5 className="font-bold text-slate-200">{item.title}</h5>
+                          <p className="text-slate-400 leading-normal">{item.reason}</p>
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
+                      <p className="text-slate-500 italic">Nenhum elemento prejudicial detectado.</p>
                     )}
                   </CardContent>
                 </CollapsibleContent>
@@ -595,7 +594,6 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
 
         </div>
 
-        {/* Visualização do PDF */}
         <div className="flex flex-col gap-4 lg:sticky lg:top-8">
           <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200 overflow-hidden">
             <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between">

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   headline: {
     fontSize: 10.5,
     color: "#333333",
-    marginTop: 8,
+    marginTop: 12,
   },
   section: {
     marginTop: 12,
