@@ -8,8 +8,14 @@ export interface OptimizedLinkedinResult {
     title: string;
     creator: string;
     keywords: string;
-    description: string;
-    category: string;
+    subject: string;
+  };
+  contact: {
+    email: string;
+    phone: string;
+    linkedin: string;
+    website: string;
+    location: string;
   };
   headline: string;
   summary: string;
@@ -87,10 +93,20 @@ const linkedinSchema = {
         title: { type: "string" },
         creator: { type: "string" },
         keywords: { type: "string" },
-        description: { type: "string" },
-        category: { type: "string" }
+        subject: { type: "string" }
       },
-      required: ["title", "creator", "keywords", "description", "category"]
+      required: ["title", "creator", "keywords", "subject"]
+    },
+    contact: {
+      type: "object",
+      properties: {
+        email: { type: "string" },
+        phone: { type: "string" },
+        linkedin: { type: "string" },
+        website: { type: "string" },
+        location: { type: "string" }
+      },
+      required: ["email", "phone", "linkedin", "website", "location"]
     },
     headline: { type: "string" },
     summary: { type: "string" },
@@ -170,7 +186,7 @@ const linkedinSchema = {
       required: ["geral", "resumo", "experiencia", "habilidades", "cursos"]
     }
   },
-  required: ["metadata", "headline", "summary", "experience", "skills", "education", "thingsToRemove", "thingsToAdd", "scores"]
+  required: ["metadata", "contact", "headline", "summary", "experience", "skills", "education", "thingsToRemove", "thingsToAdd", "scores"]
 };
 
 const gupySchema = {
@@ -303,18 +319,19 @@ export async function optimizeForLinkedin(
       6. Não invente informações que não estejam no currículo base.
       7. Extraia e divida as principais competências ('skills') por categorias lógicas (ex: "Front-end", "Back-end", "Metodologias", "Idiomas", etc.) em um formato de lista de objetos com 'category' e 'items'.
       8. Mantenha os dados de formação acadêmica do candidato originais, mas adapte se necessário a formatação.
-      9. Gere metadados adequados para o PDF:
-        - title: Cargo identificado na vaga
-        - creator: Nome do Candidato (extraia do currículo)
-        - keywords: Lista de palavras-chave da descrição da vaga, separadas por vírgula.
-        - description: Resumo da experiência do candidato, baseado na vaga.
-        - category: curriculo
+      9. Gere metadados adequados para o PDF no objeto 'metadata':
+        - title: Cargo identificado na vaga.
+        - author: Nome do Candidato (extraia do currículo base).
+        - keywords: Lista de principais palavras-chave da descrição da vaga, separadas por vírgula.
+        - subject: Cargo almejado ou área de atuação identificada na descrição da vaga.
         
-      10. Inclua duas seções extras à parte, com coisas a incluir e coisas a remover para melhorar o currículo, com justificativas. 
+      10. Extraia as informações de contato do candidato (email, phone/telefone, linkedin/perfil do LinkedIn, website/portfólio/github, e location/localização como Cidade/Estado) do currículo base e retorne no objeto 'contact'. Caso algum dado não exista no currículo base, preencha-o como uma string vazia ("").
+      
+      11. Inclua duas seções extras à parte, com coisas a incluir e coisas a remover para melhorar o currículo, com justificativas. 
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -402,7 +419,7 @@ export async function optimizeForGupy(
     `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

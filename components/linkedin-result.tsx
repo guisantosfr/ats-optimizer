@@ -29,11 +29,22 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
   }, []);
 
   // Atualizar dados do cabeçalho / metadados
-  const handleMetadataChange = (key: string, value: string) => {
+  const handleMetadataChange = (key: keyof OptimizedLinkedinResult["metadata"], value: string) => {
     setData((prev) => ({
       ...prev,
       metadata: {
         ...prev.metadata,
+        [key]: value,
+      },
+    }));
+  };
+
+  // Atualizar dados de contato
+  const handleContactChange = (key: keyof OptimizedLinkedinResult["contact"], value: string) => {
+    setData((prev) => ({
+      ...prev,
+      contact: {
+        ...(prev.contact || { email: "", phone: "", linkedin: "", website: "", location: "" }),
         [key]: value,
       },
     }));
@@ -248,11 +259,11 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                 <CardContent className="space-y-4 pt-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="author" className="text-sm font-semibold text-slate-300">Nome do Candidato (Autor)</Label>
+                      <Label htmlFor="creator" className="text-sm font-semibold text-slate-300">Nome do Candidato</Label>
                       <Input
-                        id="author"
-                        value={data.metadata.creator}
-                        onChange={(e) => handleMetadataChange("author", e.target.value)}
+                        id="creator"
+                        value={data.metadata.creator || ""}
+                        onChange={(e) => handleMetadataChange("creator", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />
                     </div>
@@ -260,7 +271,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                       <Label htmlFor="pdfTitle" className="text-sm font-semibold text-slate-300">Título do Arquivo PDF</Label>
                       <Input
                         id="pdfTitle"
-                        value={data.metadata.title}
+                        value={data.metadata.title || ""}
                         onChange={(e) => handleMetadataChange("title", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />
@@ -272,7 +283,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                       <Label htmlFor="subject" className="text-sm font-semibold text-slate-300">Assunto / Cargo Almejado</Label>
                       <Input
                         id="subject"
-                        value={data.metadata.description}
+                        value={data.metadata.subject || ""}
                         onChange={(e) => handleMetadataChange("subject", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />
@@ -281,14 +292,68 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                       <Label htmlFor="keywords" className="text-sm font-semibold text-slate-300">Palavras-chave (Separadas por vírgula)</Label>
                       <Input
                         id="keywords"
-                        value={data.metadata.keywords}
+                        value={data.metadata.keywords || ""}
                         onChange={(e) => handleMetadataChange("keywords", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="border-t border-sky-950/30 my-4 pt-4">
+                    <h4 className="text-sm font-semibold text-sky-400 mb-3">Dados de Contato (extraídos do currículo base)</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-xs text-slate-400">E-mail</Label>
+                        <Input
+                          id="email"
+                          value={data.contact?.email || ""}
+                          onChange={(e) => handleContactChange("email", e.target.value)}
+                          className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 h-8 text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone" className="text-xs text-slate-400">Telefone</Label>
+                        <Input
+                          id="phone"
+                          value={data.contact?.phone || ""}
+                          onChange={(e) => handleContactChange("phone", e.target.value)}
+                          className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 h-8 text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="location" className="text-xs text-slate-400">Localização (Cidade/Estado)</Label>
+                        <Input
+                          id="location"
+                          value={data.contact?.location || ""}
+                          onChange={(e) => handleContactChange("location", e.target.value)}
+                          className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 h-8 text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="linkedinUrl" className="text-xs text-slate-400">LinkedIn URL</Label>
+                        <Input
+                          id="linkedinUrl"
+                          value={data.contact?.linkedin || ""}
+                          onChange={(e) => handleContactChange("linkedin", e.target.value)}
+                          className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 h-8 text-sm"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="website" className="text-xs text-slate-400">Site / Portfólio</Label>
+                        <Input
+                          id="website"
+                          value={data.contact?.website || ""}
+                          onChange={(e) => handleContactChange("website", e.target.value)}
+                          className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100 h-8 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-sky-950/30 my-4 pt-4 space-y-2">
                     <Label htmlFor="headline" className="text-sm font-semibold text-slate-300">Título Profissional (Headline)</Label>
                     <Input
                       id="headline"

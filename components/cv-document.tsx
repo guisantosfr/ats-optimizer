@@ -26,7 +26,12 @@ const styles = StyleSheet.create({
   headline: {
     fontSize: 10.5,
     color: "#333333",
-    marginTop: 12,
+    marginTop: 2,
+  },
+  contactLine: {
+    fontSize: 8.5,
+    color: "#333333",
+    marginTop: 4,
   },
   section: {
     marginTop: 12,
@@ -97,22 +102,29 @@ interface CvDocumentProps {
 }
 
 export const CvDocument: React.FC<CvDocumentProps> = ({ data }) => {
-  const { metadata, headline, summary, experience, skills, education } = data;
+  const { metadata, contact, headline, summary, experience, skills, education } = data;
+
+  // Filter contact info to display nicely
+  const contactInfo = contact
+    ? [contact.email, contact.phone, contact.location, contact.linkedin, contact.website]
+      .filter(Boolean)
+      .join("  •  ")
+    : "";
 
   return (
     <Document
       title={metadata.title || "Curriculo_Otimizado"}
-      creator={metadata.creator || "Nome do Candidato"}
-      author={metadata.creator || "Nome do Candidato"}
+      author={metadata.creator || "ATS Optimizer"}
+      creator={metadata.creator || "ATS Optimizer"}
+      subject={metadata.subject || "Curriculo Otimizado para ATS"}
       keywords={metadata.keywords || "ATS, resume, currículo"}
-      subject={metadata.description || "Curriculo Otimizado para ATS"}
-      producer={metadata.creator || "Nome do Candidato"}
     >
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
           <Text style={styles.name}>{metadata.creator || "Nome do Candidato"}</Text>
           {headline && <Text style={styles.headline}>{headline}</Text>}
+          {contactInfo && <Text style={styles.contactLine}>{contactInfo}</Text>}
         </View>
 
         {/* Resumo Profissional */}
