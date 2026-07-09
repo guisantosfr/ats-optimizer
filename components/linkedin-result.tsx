@@ -251,7 +251,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                       <Label htmlFor="author" className="text-sm font-semibold text-slate-300">Nome do Candidato (Autor)</Label>
                       <Input
                         id="author"
-                        value={data.metadata.author}
+                        value={data.metadata.creator}
                         onChange={(e) => handleMetadataChange("author", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />
@@ -272,7 +272,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
                       <Label htmlFor="subject" className="text-sm font-semibold text-slate-300">Assunto / Cargo Almejado</Label>
                       <Input
                         id="subject"
-                        value={data.metadata.subject}
+                        value={data.metadata.description}
                         onChange={(e) => handleMetadataChange("subject", e.target.value)}
                         className="bg-slate-950/80 border-slate-800 focus:border-sky-500 text-slate-100"
                       />

@@ -6,9 +6,10 @@ import { Type } from "@google/genai";
 export interface OptimizedLinkedinResult {
   metadata: {
     title: string;
-    author: string;
-    subject: string;
+    creator: string;
     keywords: string;
+    description: string;
+    category: string;
   };
   headline: string;
   summary: string;
@@ -84,11 +85,12 @@ const linkedinSchema = {
       type: "object",
       properties: {
         title: { type: "string" },
-        author: { type: "string" },
-        subject: { type: "string" },
-        keywords: { type: "string" }
+        creator: { type: "string" },
+        keywords: { type: "string" },
+        description: { type: "string" },
+        category: { type: "string" }
       },
-      required: ["title", "author", "subject", "keywords"]
+      required: ["title", "creator", "keywords", "description", "category"]
     },
     headline: { type: "string" },
     summary: { type: "string" },
@@ -302,10 +304,12 @@ export async function optimizeForLinkedin(
       7. Extraia e divida as principais competências ('skills') por categorias lógicas (ex: "Front-end", "Back-end", "Metodologias", "Idiomas", etc.) em um formato de lista de objetos com 'category' e 'items'.
       8. Mantenha os dados de formação acadêmica do candidato originais, mas adapte se necessário a formatação.
       9. Gere metadados adequados para o PDF:
-        - title: Ex. "Curriculo_Otimizado_[Nome_do_Candidato]"
-        - author: Nome do Candidato (extraia do currículo)
-        - subject: Cargo almejado (ex: "Desenvolvedor React")
-        - keywords: Lista de palavras-chave separadas por vírgula.
+        - title: Cargo identificado na vaga
+        - creator: Nome do Candidato (extraia do currículo)
+        - keywords: Lista de palavras-chave da descrição da vaga, separadas por vírgula.
+        - description: Resumo da experiência do candidato, baseado na vaga.
+        - category: curriculo
+        
       10. Inclua duas seções extras à parte, com coisas a incluir e coisas a remover para melhorar o currículo, com justificativas. 
     `;
 

@@ -102,14 +102,16 @@ export const CvDocument: React.FC<CvDocumentProps> = ({ data }) => {
   return (
     <Document
       title={metadata.title || "Curriculo_Otimizado"}
-      author={metadata.author || "ATS Optimizer"}
-      subject={metadata.subject || "Curriculo Otimizado para ATS"}
+      creator={metadata.creator || "Nome do Candidato"}
+      author={metadata.creator || "Nome do Candidato"}
       keywords={metadata.keywords || "ATS, resume, currículo"}
+      subject={metadata.description || "Curriculo Otimizado para ATS"}
+      producer={metadata.creator || "Nome do Candidato"}
     >
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
-          <Text style={styles.name}>{metadata.author || "Nome do Candidato"}</Text>
+          <Text style={styles.name}>{metadata.creator || "Nome do Candidato"}</Text>
           {headline && <Text style={styles.headline}>{headline}</Text>}
         </View>
 
