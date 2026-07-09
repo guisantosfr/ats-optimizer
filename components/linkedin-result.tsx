@@ -380,30 +380,28 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
 
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-              <CollapsibleTrigger className="w-full text-left block">
-                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+              <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between group/header">
+                <CollapsibleTrigger className="flex-1 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none">
                   <div className="space-y-1">
                     <CardTitle className="text-lg text-sky-300">Experiências Profissionais</CardTitle>
                     <CardDescription className="text-slate-400">
                       Descreva suas experiências passadas estruturando os bullet points.
                     </CardDescription>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addExperience();
-                      }}
-                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-                    >
-                      <Plus className="h-4 w-4" /> Add
-                    </Button>
-                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
+                  <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200 mr-2" />
+                </CollapsibleTrigger>
+                <div className="flex-shrink-0 ml-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addExperience()}
+                    className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                  >
+                    <Plus className="h-4 w-4" /> Add
+                  </Button>
+                </div>
+              </CardHeader>
               <CollapsibleContent>
                 <CardContent className="space-y-6 pt-5">
                   {data.experience.map((exp, index) => (
@@ -464,30 +462,28 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
 
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-              <CollapsibleTrigger className="w-full text-left block">
-                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+              <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between group/header">
+                <CollapsibleTrigger className="flex-1 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none">
                   <div className="space-y-1">
                     <CardTitle className="text-lg text-sky-300">Competências</CardTitle>
                     <CardDescription className="text-slate-400">
                       Organize suas competências em categorias (ex: Front-end, Back-end).
                     </CardDescription>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addSkillCategory();
-                      }}
-                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-                    >
-                      <Plus className="h-4 w-4" /> Add Categoria
-                    </Button>
-                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
+                  <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200 mr-2" />
+                </CollapsibleTrigger>
+                <div className="flex-shrink-0 ml-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addSkillCategory()}
+                    className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                  >
+                    <Plus className="h-4 w-4" /> Add Categoria
+                  </Button>
+                </div>
+              </CardHeader>
               <CollapsibleContent>
                 <CardContent className="space-y-4 pt-5">
                   {data.skills && data.skills.map((cat, index) => (
@@ -530,30 +526,28 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
 
           <Collapsible defaultOpen={true}>
             <Card className="border-sky-500/10 bg-slate-900/50 backdrop-blur-md shadow-xl text-slate-200">
-              <CollapsibleTrigger className="w-full text-left block">
-                <CardHeader className="border-b border-sky-950/30 pb-4 cursor-pointer select-none flex flex-row items-center justify-between group">
+              <CardHeader className="border-b border-sky-950/30 pb-4 flex flex-row items-center justify-between group/header">
+                <CollapsibleTrigger className="flex-1 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none">
                   <div className="space-y-1">
                     <CardTitle className="text-lg text-sky-300">Formação Acadêmica</CardTitle>
                     <CardDescription className="text-slate-400">
                       Cadastre suas formações, cursos acadêmicos ou certificações superiores.
                     </CardDescription>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addEducation();
-                      }}
-                      className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
-                    >
-                      <Plus className="h-4 w-4" /> Add
-                    </Button>
-                    <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200" />
-                  </div>
-                </CardHeader>
-              </CollapsibleTrigger>
+                  <ChevronDown className="h-5 w-5 text-slate-500 group-data-[state=open]:rotate-180 transition-transform duration-200 mr-2" />
+                </CollapsibleTrigger>
+                <div className="flex-shrink-0 ml-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => addEducation()}
+                    className="border-sky-500/30 text-sky-400 hover:bg-sky-950/50 flex items-center gap-1.5"
+                  >
+                    <Plus className="h-4 w-4" /> Add
+                  </Button>
+                </div>
+              </CardHeader>
               <CollapsibleContent>
                 <CardContent className="space-y-4 pt-5">
                   {data.education.map((edu, index) => (
