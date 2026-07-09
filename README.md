@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Otimizador de Currículos para ATS (ATS Resume Optimizer)
 
-## Getting Started
+Uma aplicação web moderna e inteligente desenvolvida para otimizar currículos com foco em passar nos filtros de sistemas de rastreamento de candidatos (ATS - Applicant Tracking Systems). A aplicação adapta o conteúdo original do currículo especificamente para a vaga de emprego fornecida e gera análises e recomendações personalizadas com base na plataforma alvo selecionada: **LinkedIn** ou **Gupy**.
 
-First, run the development server:
+---
 
+## 📸 Demonstração Visual
+
+Abaixo estão capturas de tela da aplicação em funcionamento:
+
+### 1. Tela Inicial
+A interface é baseada em uma arquitetura de estado único (SPA), com design escuro (dark mode), variações elegantes de azul, inputs com altura delimitada e rolagem vertical. O usuário cola o currículo atual (ou carrega via arquivo `.txt`), insere a descrição da vaga e escolhe o canal de otimização à direita.
+![Tela Inicial](public/screen-1.png)
+
+### 2. Otimização para LinkedIn (Visualização & PDF)
+No fluxo do LinkedIn, a aplicação calcula notas de aderência detalhadas e gera um currículo estruturado com competências organizadas por categorias. Permite a edição em tempo real das informações de contato, experiências, formação acadêmica e metadados, oferecendo a visualização direta e o download do PDF formatado em preto e branco (padrão preferencial dos leitores de ATS).
+![Painel LinkedIn](public/screen-2.png)
+
+### 3. Otimização para Gupy (Campos e Exportação .md)
+No fluxo da Gupy, os resultados geram blocos de texto otimizados (como a carta de apresentação, descrição de experiências com verbos de ação/método/impacto e tags curtas de habilidades) projetados especificamente para o algoritmo de triagem da plataforma. Permite edição ágil, cópia rápida com um clique e exportação de todo o conteúdo em arquivo Markdown (.md).
+![Painel Gupy](public/screen-3.png)
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Core & Routing:** Next.js 16 (App Router) & Turbopack.
+- **Linguagem:** TypeScript.
+- **Estilização & Componentes:** Tailwind CSS, ShadcnUI e Base UI (painéis retráteis robustos).
+- **Processamento de IA:** Server Actions integradas com a API do Google GenAI utilizando o modelo **Gemini 3 Flash Preview** (`gemini-3-flash-preview`), com mapeamento rígido de tipagem através de esquemas JSON estruturados via Zod.
+- **Geração de PDF:** `@react-pdf/renderer` para geração vetorial e download direto do PDF no lado do cliente.
+
+---
+
+## 🌟 Principais Funcionalidades
+
+### 📄 Canal LinkedIn (Foco em PDF Estruturado)
+- **Nota de Aderência:** Métricas detalhadas (Score Geral, Resumo, Experiência, Habilidades e Cursos).
+- **Competências Categorizadas:** Classificação de competências técnicas em categorias lógicas (Ex: Front-end, Metodologias, Ferramentas).
+- **Editor Embutido:** Permite editar dados de contato (email, telefone, localização, perfis), headline, resumo profissional, experiências, competências e formação acadêmica diretamente na tela antes de exportar.
+- **Exportação ATS-Friendly:** Download de currículo vetorial formatado em preto e branco com espaçamentos otimizados.
+- **Feedback de IA:** Sugestões detalhadas de termos e itens a **Adicionar** ou **Remover** para aumentar a pontuação final.
+
+### ⚡ Canal Gupy (Foco em Cópia e Cadastro)
+- **Nota de Aderência Gupy:** Medição de compatibilidade baseada em palavras-chave da vaga e títulos de cargo.
+- **Carta de Apresentação:** Geração de cover letter estruturada com o cargo padrão, especialidade, anos de experiência e impacto principal.
+- **Tags Técnicas:** Identificação e formatação do Top 3 Competências em termos técnicos curtos (Ex: React, Node.js, AWS).
+- **Exportação Markdown:** Download da análise e dos blocos de texto otimizados em um arquivo `.md`.
+
+---
+
+## 🚀 Como Executar o Projeto Localmente
+
+### Pré-requisitos
+Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
+
+### Passo 1: Clonar o Repositório e Instalar Dependências
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <url-do-repositorio>
+cd ats-optimizer
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Passo 2: Configurar Variáveis de Ambiente
+Crie um arquivo `.env` na raiz do projeto e configure a sua chave de API do Gemini:
+```env
+GEMINI_API_KEY=sua_chave_de_api_aqui
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Passo 3: Iniciar o Servidor de Desenvolvimento
+Execute o comando abaixo para iniciar o servidor Next.js localmente:
+```bash
+npm run dev
+```
+Acesse `http://localhost:3000` no seu navegador.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Passo 4: Build de Produção
+Para compilar a aplicação de forma otimizada para produção:
+```bash
+npm run build
+npm run start
+```
