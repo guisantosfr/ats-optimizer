@@ -300,7 +300,7 @@ export async function optimizeForLinkedin(
       5. Reescreva as experiências profissionais ('experience'), estruturando cada atividade com bullet points acionáveis, focados em impacto ou resultados/conquistas quantificáveis, se existirem. (ex: "Aumentei a performance em 20% utilizando Next.js").
       6. Não invente informações que não estejam no currículo base.
       7. Extraia e divida as principais competências ('skills') por categorias lógicas (ex: "Front-end", "Back-end", "Metodologias", "Idiomas", etc.) em um formato de lista de objetos com 'category' e 'items'.
-      8. Mantenha os dados de educação ('education') do candidato originais, mas adapte se necessário a formatação, se necessário.
+      8. Mantenha os dados de formação acadêmica do candidato originais, mas adapte se necessário a formatação.
       9. Gere metadados adequados para o PDF:
         - title: Ex. "Curriculo_Otimizado_[Nome_do_Candidato]"
         - author: Nome do Candidato (extraia do currículo)
@@ -352,8 +352,9 @@ export async function optimizeForGupy(
 
       Primeiramente, Compare os dados do currículo com o perfil ideal da vaga, considerando cargo, área, nível de experiência, habilidades exigidas, formação mínima, idiomas e outros requisitos específicos.
 
-      Meça o grau de correspondência em cada seção e atribua pontuação proporcional de 0 a 100 no objeto 'scores', dividindo em: geral, experiencias, cursosCertificados e habilidades.
-
+      Meça o grau de correspondência entre o currículo base e a descrição da vagaem cada seção e atribua pontuação proporcional de 0 a 100 no objeto 'scores', dividindo em: geral, experiencias, cursos/certificados e habilidades.
+      Os critérios de avaliação estão descritos a seguir:
+      
       CAMPOS DE ALTO PESO
       - Habilidades: comparadas diretamente com os requisitos técnicos da vaga. Sobreposição alta gera pontuação alta. Sobreposição baixa
       gera pontuação baixa mesmo com experiência real.
