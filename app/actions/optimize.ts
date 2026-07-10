@@ -394,15 +394,18 @@ export async function optimizeForGupy(
 
       Depois, reescreva os dados do currículo de modo a maximizar as pontuações, com as seguintes regras adicionais:
 
-      Carta de Apresentação (coverLetter): 
-      - 1ª linha - cargo padrão, especialidade, anos de experiência e segmento
-      - 2ª linha - o que entrega e a ferramenta ou método principal
-      Todo o resumo deve usar os termos técnicos da área com os nomes exatos
+      Carta de Apresentação (coverLetter):
+      - Incluir:
+        - cargo padrão, especialidade, anos de experiência e segmento
+        - o que entrega e a ferramenta ou método principal
+      - Use os termos técnicos da área com os nomes exatos
+      - Use até 1500 caracteres, relacionando a descrição da vaga com o currículo, de forma personalizada para a empresa da vaga
 
       Descrições das experiências (experiences):
       - Em vez de um texto extenso, retorne uma lista de bullet points ('bullets') para cada experiência.
       - Cada bullet point deve seguir a estrutura: ação + ferramenta + impacto ou resultado (ex: "Desenvolvi APIs RESTful com Node.js reduzindo o tempo de carregamento de dados em 15%").
       - Os termos técnicos devem aparecer nos bullet points de forma natural e contextualizada.
+      - Não economize caracteres e descreva as atividades nas experiências profissionais de forma completa e clara.
       - Preencha os campos 'company' e 'period' com os dados originais do currículo para cada experiência.
 
       Top 3 Competências (top3Strengths):
