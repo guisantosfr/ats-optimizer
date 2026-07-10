@@ -30,8 +30,10 @@ export default function Home() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== "text/plain" && !file.name.endsWith(".txt")) {
-      toast.error("Formato inválido. Apenas arquivos .txt são suportados no momento.");
+    const isTxt = file.name.endsWith(".txt");
+    const isMd = file.name.endsWith(".md");
+    if (!isTxt && !isMd) {
+      toast.error("Formato inválido. Apenas arquivos .txt ou .md são suportados.");
       return;
     }
 
@@ -162,7 +164,7 @@ export default function Home() {
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileUpload}
-                    accept=".txt"
+                    accept=".txt,.md"
                     className="hidden"
                   />
                   <Button
@@ -172,7 +174,7 @@ export default function Home() {
                     className="border-sky-500/20 bg-slate-900/60 hover:bg-sky-950/40 text-sky-400 hover:text-sky-300 transition-all flex items-center gap-1.5"
                   >
                     <Upload className="h-3.5 w-3.5" />
-                    Fazer Upload (txt)
+                    Fazer Upload (.txt, .md)
                   </Button>
                 </div>
               </CardHeader>
