@@ -413,6 +413,7 @@ export async function optimizeForGupy(
 
       Nome do arquivo (filename):
       - Sugira um nome de arquivo adequado para salvar esta otimização da Gupy como Markdown, no formato "gupy_otimizado_[nome_do_candidato].md".
+      - Inclua no nome do arquivo: cargo da vaga e nome da empresa (se houver).
 
       Inclua também:
       - Itens que podem ser removidos por prejudicarem a nota final (com justificativa).
