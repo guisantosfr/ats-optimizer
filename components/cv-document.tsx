@@ -1,6 +1,6 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
-import { OptimizedLinkedinResult } from "@/app/actions/optimize";
+import { LinkedinResult } from "@/lib/schemas/optimize";
 
 const styles = StyleSheet.create({
   page: {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
 });
 
 interface CvDocumentProps {
-  data: OptimizedLinkedinResult;
+  data: LinkedinResult;
 }
 
 export const CvDocument: React.FC<CvDocumentProps> = ({ data }) => {

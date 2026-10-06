@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
-import { OptimizedLinkedinResult } from "@/app/actions/optimize";
 import { CvDocument } from "./cv-document";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,14 +13,15 @@ import {
   FileText, ArrowLeft, Download, RefreshCw, Plus, Trash2,
   PlusCircle, AlertTriangle, ChevronDown
 } from "lucide-react";
+import { LinkedinResult as LinkedinResultType } from "@/lib/schemas/optimize";
 
 interface LinkedinResultProps {
-  initialData: OptimizedLinkedinResult;
+  initialData: LinkedinResultType;
   onBack: () => void;
 }
 
 export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onBack }) => {
-  const [data, setData] = useState<OptimizedLinkedinResult>(initialData);
+  const [data, setData] = useState<LinkedinResultType>(initialData);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
   }, []);
 
   // Atualizar dados do cabeçalho / metadados
-  const handleMetadataChange = (key: keyof OptimizedLinkedinResult["metadata"], value: string) => {
+  const handleMetadataChange = (key: keyof LinkedinResultType["metadata"], value: string) => {
     setData((prev) => ({
       ...prev,
       metadata: {
@@ -40,7 +40,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
   };
 
   // Atualizar dados de contato
-  const handleContactChange = (key: keyof OptimizedLinkedinResult["contact"], value: string) => {
+  const handleContactChange = (key: keyof LinkedinResultType["contact"], value: string) => {
     setData((prev) => ({
       ...prev,
       contact: {
@@ -51,7 +51,7 @@ export const LinkedinResult: React.FC<LinkedinResultProps> = ({ initialData, onB
   };
 
   // Atualizar campos simples
-  const handleSimpleFieldChange = (key: keyof OptimizedLinkedinResult, value: any) => {
+  const handleSimpleFieldChange = (key: keyof LinkedinResultType, value: any) => {
     setData((prev) => ({
       ...prev,
       [key]: value,
