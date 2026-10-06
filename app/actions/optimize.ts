@@ -1,300 +1,14 @@
 "use server";
 
-import { ai } from "@/lib/gemini";
-import { Type } from "@google/genai";
-
-export interface OptimizedLinkedinResult {
-  metadata: {
-    title: string;
-    creator: string;
-    keywords: string;
-    subject: string;
-  };
-  contact: {
-    email: string;
-    phone: string;
-    linkedin: string;
-    website: string;
-    location: string;
-  };
-  headline: string;
-  summary: string;
-  experience: {
-    company: string;
-    role: string;
-    period: string;
-    bullets: string[];
-  }[];
-  education: {
-    institution: string;
-    degree: string;
-    period: string;
-  }[];
-  skills: {
-    category: string;
-    items: string[];
-  }[];
-  thingsToRemove: {
-    title: string;
-    reason: string;
-  }[];
-  thingsToAdd: {
-    title: string;
-    reason: string;
-  }[];
-  scores: {
-    geral: number;
-    resumo: number;
-    experiencia: number;
-    habilidades: number;
-    cursos: number;
-  };
-}
-
-export interface OptimizedGupyResult {
-  scores: {
-    geral: number;
-    experiencias: number;
-    cursosCertificados: number;
-    habilidades: number;
-  };
-  keywords: string[];
-  experiences: {
-    company: string;
-    role: string;
-    period: string;
-    bullets: string[];
-  }[];
-  courses: {
-    type: 'course' | 'certification' | 'acknowledgment' | 'volunteer_work';
-    title: string;
-    description: string;
-  }[];
-  skills: string[];
-  coverLetter: string;
-  top3Strengths: string[];
-  thingsToRemove: {
-    title: string;
-    reason: string;
-  }[];
-  thingsToAdd: {
-    title: string;
-    reason: string;
-  }[];
-  filename: string;
-}
-
-const linkedinSchema = {
-  type: "object",
-  properties: {
-    metadata: {
-      type: "object",
-      properties: {
-        title: { type: "string" },
-        creator: { type: "string" },
-        keywords: { type: "string" },
-        subject: { type: "string" }
-      },
-      required: ["title", "creator", "keywords", "subject"]
-    },
-    contact: {
-      type: "object",
-      properties: {
-        email: { type: "string" },
-        phone: { type: "string" },
-        linkedin: { type: "string" },
-        website: { type: "string" },
-        location: { type: "string" }
-      },
-      required: ["email", "phone", "linkedin", "website", "location"]
-    },
-    headline: { type: "string" },
-    summary: { type: "string" },
-    experience: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          company: { type: "string" },
-          role: { type: "string" },
-          period: { type: "string" },
-          bullets: {
-            type: "array",
-            items: { type: "string" }
-          }
-        },
-        required: ["company", "role", "period", "bullets"]
-      }
-    },
-    education: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          institution: { type: "string" },
-          degree: { type: "string" },
-          period: { type: "string" }
-        },
-        required: ["institution", "degree", "period"]
-      }
-    },
-    skills: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          category: { type: Type.STRING },
-          items: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
-        },
-        required: ["category", "items"]
-      }
-    },
-    thingsToRemove: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING },
-          reason: { type: Type.STRING },
-        },
-        required: ['title', 'reason']
-      }
-    },
-    thingsToAdd: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING },
-          reason: { type: Type.STRING },
-        },
-        required: ['title', 'reason']
-      }
-    },
-    scores: {
-      type: Type.OBJECT,
-      properties: {
-        geral: { type: Type.NUMBER },
-        resumo: { type: Type.NUMBER },
-        experiencia: { type: Type.NUMBER },
-        habilidades: { type: Type.NUMBER },
-        cursos: { type: Type.NUMBER }
-      },
-      required: ["geral", "resumo", "experiencia", "habilidades", "cursos"]
-    }
-  },
-  required: ["metadata", "contact", "headline", "summary", "experience", "skills", "education", "thingsToRemove", "thingsToAdd", "scores"]
-};
-
-const gupySchema = {
-  type: Type.OBJECT,
-  properties: {
-    scores: {
-      type: Type.OBJECT,
-      properties: {
-        geral: { type: Type.NUMBER },
-        experiencias: { type: Type.NUMBER },
-        cursosCertificados: { type: Type.NUMBER },
-        habilidades: { type: Type.NUMBER }
-      },
-      required: ["geral", "experiencias", "cursosCertificados", "habilidades"]
-    },
-    keywords: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.STRING
-      }
-    },
-    experiences: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          company: { type: Type.STRING },
-          role: { type: Type.STRING },
-          period: { type: Type.STRING },
-          bullets: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
-        },
-        required: ['company', 'role', 'period', 'bullets']
-      }
-    },
-    courses: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          type: { type: Type.STRING, enum: ['course', 'certification', 'acknowledgment', 'volunteer_work'] },
-          title: { type: Type.STRING },
-          description: { type: Type.STRING },
-        },
-        required: ['type', 'title', 'description']
-      }
-    },
-    skills: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.STRING
-      }
-    },
-    coverLetter: {
-      type: Type.STRING
-    },
-    top3Strengths: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.STRING
-      }
-    },
-    thingsToRemove: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING },
-          reason: { type: Type.STRING },
-        },
-        required: ['title', 'reason']
-      }
-    },
-    thingsToAdd: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING },
-          reason: { type: Type.STRING },
-        },
-        required: ['title', 'reason']
-      }
-    },
-    filename: {
-      type: Type.STRING
-    }
-  },
-  required: [
-    "scores",
-    "keywords",
-    "experiences",
-    "courses",
-    "skills",
-    "coverLetter",
-    "top3Strengths",
-    "thingsToRemove",
-    "thingsToAdd",
-    "filename"
-  ]
-};
+import { openai } from "@/lib/openai";
+import { GupyResult, gupySchema, LinkedinResult, linkedinSchema } from "@/lib/schemas/optimize";
+import OpenAI from "openai";
+import { zodTextFormat } from "openai/helpers/zod";
 
 export async function optimizeForLinkedin(
   resumeText: string,
   jobDescription: string
-): Promise<{ success: boolean; data?: OptimizedLinkedinResult; error?: string }> {
+): Promise<{ success: boolean; data?: LinkedinResult; error?: string }> {
   if (!resumeText || !jobDescription) {
     return { success: false, error: "O currículo e a descrição da vaga são obrigatórios." };
   }
@@ -321,7 +35,7 @@ export async function optimizeForLinkedin(
       8. Mantenha os dados de formação acadêmica do candidato originais, mas adapte se necessário a formatação.
       9. Gere metadados adequados para o PDF no objeto 'metadata':
         - title: Cargo identificado na vaga.
-        - author: Nome do Candidato (extraia do currículo base).
+        - creator: Nome do Candidato (extraia do currículo base).
         - keywords: Lista de principais palavras-chave da descrição da vaga, separadas por vírgula.
         - subject: Cargo almejado ou área de atuação identificada na descrição da vaga.
         
@@ -330,31 +44,74 @@ export async function optimizeForLinkedin(
       11. Inclua duas seções extras à parte, com coisas a incluir e coisas a remover para melhorar o currículo, com justificativas. 
     `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: linkedinSchema,
+    const response = await openai.responses.parse({
+      model: process.env.OPENAI_MODEL!,
+      input: prompt,
+      text: {
+        format: zodTextFormat(
+          linkedinSchema,
+          "linkedin_optimization"
+        ),
       },
     });
 
-    if (!response.text) {
-      throw new Error("Resposta da IA vazia.");
+    if (!response.output_parsed) {
+      throw new Error("A IA não retornou um resultado válido.");
     }
 
-    const data = JSON.parse(response.text) as OptimizedLinkedinResult;
-    return { success: true, data };
-  } catch (error: any) {
-    console.error("Erro na action optimizeForLinkedin:", error);
-    return { success: false, error: error.message || "Erro ao comunicar com a API do Gemini." };
+    return {
+      success: true,
+      data: response.output_parsed,
+    };
+
+  } catch (error: unknown) {
+    console.error(
+      "Erro na action optimizeForLinkedin:",
+      error
+    );
+
+    if (error instanceof OpenAI.AuthenticationError) {
+      return {
+        success: false,
+        error: "Erro de configuração do serviço de IA.",
+      };
+    }
+
+    if (error instanceof OpenAI.RateLimitError) {
+      return {
+        success: false,
+        error: "O serviço de IA está temporariamente sobrecarregado. Tente novamente em alguns instantes.",
+      };
+    }
+
+    if (error instanceof OpenAI.InternalServerError) {
+      return {
+        success: false,
+        error: "O serviço de IA está temporariamente indisponível. Tente novamente mais tarde.",
+      };
+    }
+
+    if (error instanceof OpenAI.APIConnectionError) {
+      return {
+        success: false,
+        error: "Não foi possível conectar ao serviço de IA. Tente novamente mais tarde.",
+      };
+    }
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Erro ao comunicar com o serviço de IA.",
+    };
   }
 }
 
 export async function optimizeForGupy(
   resumeText: string,
   jobDescription: string
-): Promise<{ success: boolean; data?: OptimizedGupyResult; error?: string }> {
+): Promise<{ success: boolean; data?: GupyResult; error?: string }> {
   if (!resumeText || !jobDescription) {
     return { success: false, error: "O currículo e a descrição da vaga são obrigatórios." };
   }
@@ -422,23 +179,66 @@ export async function optimizeForGupy(
       Retorne os dados no formato JSON especificado abaixo:
     `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: gupySchema,
+    const response = await openai.responses.parse({
+      model: process.env.OPENAI_MODEL!,
+      input: prompt,
+      text: {
+        format: zodTextFormat(
+          gupySchema,
+          "gupy_optimization"
+        ),
       },
     });
 
-    if (!response.text) {
-      throw new Error("Resposta da IA vazia.");
+    if (!response.output_parsed) {
+      throw new Error("A IA não retornou um resultado válido.");
     }
 
-    const data = JSON.parse(response.text) as OptimizedGupyResult;
-    return { success: true, data };
-  } catch (error: any) {
-    console.error("Erro ao otimizar para Gupy:", error);
-    return { success: false, error: error.message || "Erro ao comunicar com a API do Gemini." };
+    return {
+      success: true,
+      data: response.output_parsed,
+    };
+
+  } catch (error: unknown) {
+    console.error(
+      "Erro ao otimizar para a Gupy:",
+      error
+    );
+
+    if (error instanceof OpenAI.AuthenticationError) {
+      return {
+        success: false,
+        error: "Erro de configuração do serviço de IA.",
+      };
+    }
+
+    if (error instanceof OpenAI.RateLimitError) {
+      return {
+        success: false,
+        error: "O serviço de IA está temporariamente sobrecarregado. Tente novamente em alguns instantes.",
+      };
+    }
+
+    if (error instanceof OpenAI.InternalServerError) {
+      return {
+        success: false,
+        error: "O serviço de IA está temporariamente indisponível. Tente novamente mais tarde.",
+      };
+    }
+
+    if (error instanceof OpenAI.APIConnectionError) {
+      return {
+        success: false,
+        error: "Não foi possível conectar ao serviço de IA. Tente novamente mais tarde.",
+      };
+    }
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Erro ao comunicar com o serviço de IA.",
+    };
   }
 }
