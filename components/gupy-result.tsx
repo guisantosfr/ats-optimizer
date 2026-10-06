@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { OptimizedGupyResult } from "@/app/actions/optimize";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,16 +9,17 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   Copy, Check, ArrowLeft, Briefcase, User, Wrench,
-  Award, Sparkles, AlertTriangle, PlusCircle, CheckCircle, Download, FileCode
+  Award, Sparkles, AlertTriangle, PlusCircle, CheckCircle, FileCode
 } from "lucide-react";
+import { GupyResult as GupyResultType } from "@/lib/schemas/optimize";
 
 interface GupyResultProps {
-  data: OptimizedGupyResult;
+  data: GupyResultType;
   onBack: () => void;
 }
 
 export const GupyResult: React.FC<GupyResultProps> = ({ data, onBack }) => {
-  const [state, setState] = useState<OptimizedGupyResult>(data);
+  const [state, setState] = useState<GupyResultType>(data);
   const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
 
   const handleCopy = async (id: string, text: string) => {
