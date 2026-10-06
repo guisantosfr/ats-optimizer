@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { optimizeForLinkedin, optimizeForGupy, OptimizedLinkedinResult, OptimizedGupyResult } from "@/app/actions/optimize";
+import { optimizeForLinkedin, optimizeForGupy } from "@/app/actions/optimize";
 import { GupyResult } from "@/components/gupy-result";
 import { LinkedinResult } from "@/components/linkedin-result";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Upload, FileText, Sparkles, Link, Briefcase, RefreshCw, AlertCircle, Brain } from "lucide-react";
+import { Upload, Sparkles, Briefcase, Brain } from "lucide-react";
+import { GupyResult as GupyResultType, LinkedinResult as LinkedinResultType } from "@/lib/schemas/optimize";
 
 type Platform = "linkedin" | "gupy";
 type ViewState = "input" | "linkedin_result" | "gupy_result";
@@ -21,8 +22,8 @@ export default function Home() {
   const [view, setView] = useState<ViewState>("input");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [linkedinResult, setLinkedinResult] = useState<OptimizedLinkedinResult | null>(null);
-  const [gupyResult, setGupyResult] = useState<OptimizedGupyResult | null>(null);
+  const [linkedinResult, setLinkedinResult] = useState<LinkedinResultType | null>(null);
+  const [gupyResult, setGupyResult] = useState<GupyResultType | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
